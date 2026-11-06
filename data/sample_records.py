@@ -1,0 +1,231 @@
+
+# Records
+
+records = [
+
+    {
+        "id": 1,
+        "category": "Consumer Rights",
+        "provision_title": "Consumer",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 2(7)",
+        "plain_summary": "Defines a consumer as a person who buys goods or uses services for consideration. It also covers certain online purchases.",
+        "who_it_helps": "People who purchase goods or services",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+    {
+        "id": 2,
+        "category": "Consumer Rights",
+        "provision_title": "Deficiency",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 2(11)",
+        "plain_summary": "Defines deficiency as any fault, imperfection, shortcoming or inadequacy in the quality, nature or manner of performance required in relation to a service. It also includes certain acts of negligence or omissions that cause loss or injury to a consumer.",
+        "who_it_helps": "Consumers facing poor or incomplete services",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+    {
+        "id": 3,
+        "category": "Consumer Rights",
+        "provision_title": "Unfair Trade Practice",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 2(47)",
+        "plain_summary": "Explains unfair business practices such as false advertisements, misleading claims, fake discounts and deceptive selling methods.",
+        "who_it_helps": "Consumers who face misleading business practices",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+    {
+        "id": 4,
+        "category": "Consumer Commission",
+        "provision_title": "Jurisdiction of District Commission",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 34",
+        "plain_summary": "Explains the authority of the District Consumer Commission to handle consumer complaints and its territorial jurisdiction.",
+        "who_it_helps": "Consumers filing complaints at district level",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+    {
+        "id": 5,
+        "category": "Complaint Filing",
+        "provision_title": "Manner of Filing Complaint",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 35",
+        "plain_summary": "Explains who can file a consumer complaint, including consumers, recognised consumer associations and eligible government authorities.",
+        "who_it_helps": "Consumers and consumer associations",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+    {
+        "id": 6,
+        "category": "Complaint Filing",
+        "provision_title": "Procedure on Admission of Complaint",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 38",
+        "plain_summary": "Explains the procedure followed by the Consumer Commission after receiving and admitting a complaint.",
+        "who_it_helps": "Consumers and opposite parties involved in complaints",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+    {
+        "id": 7,
+        "category": "Appeals",
+        "provision_title": "Appeal Against District Commission Order",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 41",
+        "plain_summary": "Provides the right to appeal against an order of the District Commission before the State Commission, subject to legal conditions.",
+        "who_it_helps": "Consumers and opposite parties who want to challenge an order",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+
+    {
+        "id": 8,
+        "category": "Consumer Commission",
+        "provision_title": "Jurisdiction of State Commission",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 47",
+        "plain_summary": "Explains the jurisdiction and powers of the State Consumer Commission to handle consumer complaints and appeals.",
+        "who_it_helps": "Consumers approaching the State Commission",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+    {
+        "id": 9,
+        "category": "Appeals",
+        "provision_title": "Appeal to National Commission",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 51",
+        "plain_summary": "Allows an aggrieved person to appeal against certain State Commission orders before the National Commission within the prescribed time.",
+        "who_it_helps": "Consumers and opposite parties challenging eligible State Commission orders",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+    {
+        "id": 10,
+        "category": "Consumer Commission",
+        "provision_title": "Jurisdiction of National Commission",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 58",
+        "plain_summary": "Explains the jurisdiction and powers of the National Consumer Commission.",
+        "who_it_helps": "Consumers approaching the National Commission",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+    {
+        "id": 11,
+        "category": "Complaint Filing",
+        "provision_title": "Limitation Period",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 69",
+        "plain_summary": "States that a consumer complaint generally must be filed within two years from the date on which the cause of action arises, subject to the law on condonation of delay.",
+        "who_it_helps": "Consumers planning to file complaints",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+    {
+        "id": 12,
+        "category": "Mediation",
+        "provision_title": "Establishment of Consumer Mediation Cell",
+        "document_name": "Consumer Protection Act, 2019",
+        "section_or_rule": "Section 74",
+        "plain_summary": "Provides for establishing consumer mediation cells attached to District and State Commissions and the National Commission.",
+        "who_it_helps": "Consumers and businesses resolving disputes through mediation",
+        "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/eng201935.pdf"
+    },
+
+
+   {
+    "id": 13,
+    "category": "Mediation",
+    "provision_title": "Empanelment and Nomination of Mediators",
+    "document_name": "Consumer Protection Act, 2019",
+    "section_or_rule": "Sections 75 and 76",
+    "plain_summary": "Section 75 explains how Consumer Commissions prepare a panel of mediators. Section 76 explains how a suitable mediator is nominated from the approved panel.",
+    "who_it_helps": "Consumers and parties involved in mediation",
+    "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/a2019-35.pdf"
+},
+
+{
+    "id": 14,
+    "category": "Mediation",
+    "provision_title": "Disclosure and Replacement of Mediator",
+    "document_name": "Consumer Protection Act, 2019",
+    "section_or_rule": "Sections 77 and 78",
+    "plain_summary": "Section 77 requires a mediator to disclose personal, professional or financial interests that may affect independence or impartiality. Section 78 explains the replacement of a mediator in certain cases.",
+    "who_it_helps": "Consumers and parties involved in mediation",
+    "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/a2019-35.pdf"
+},
+
+   {
+    "id": 15,
+    "category": "Mediation",
+    "provision_title": "Procedure for Mediation",
+    "document_name": "Consumer Protection Act, 2019",
+    "section_or_rule": "Section 79",
+    "plain_summary": "Explains how mediation is conducted through the consumer mediation cell attached to the District, State or National Commission.",
+    "who_it_helps": "Consumers and businesses resolving disputes",
+    "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/a2019-35.pdf"
+},
+
+   {
+    "id": 16,
+    "category": "Mediation",
+    "provision_title": "Settlement Through Mediation",
+    "document_name": "Consumer Protection Act, 2019",
+    "section_or_rule": "Section 80",
+    "plain_summary": "Explains how parties can reach a settlement through mediation and how the mediator prepares and submits the settlement report to the Consumer Commission.",
+    "who_it_helps": "Consumers and businesses resolving disputes",
+    "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/a2019-35.pdf"
+},
+
+   {
+    "id": 17,
+    "category": "Mediation",
+    "provision_title": "Recording Settlement and Passing of Order",
+    "document_name": "Consumer Protection Act, 2019",
+    "section_or_rule": "Section 81",
+    "plain_summary": "Explains how the Consumer Commission records a settlement through an order after receiving the mediator's report. If only part of the dispute is settled, the remaining issues continue.",
+    "who_it_helps": "Consumers and businesses involved in mediation",
+    "source_url": "https://www.indiacode.nic.in/bitstream/123456789/15256/1/a2019-35.pdf"
+},
+
+
+  {
+    "id": 18,
+    "category": "Jurisdiction Rules",
+    "provision_title": "Pecuniary Jurisdiction of Consumer Commissions",
+    "document_name": "Consumer Protection (Jurisdiction of the District Commission, the State Commission and the National Commission) Rules, 2021",
+    "section_or_rule": "Rules 3, 4 and 5",
+    "plain_summary": "District Commission handles complaints where consideration paid does not exceed Rs. 50 lakh. State Commission handles complaints above Rs. 50 lakh and up to Rs. 2 crore. National Commission handles complaints above Rs. 2 crore.",
+    "who_it_helps": "Consumers identifying the correct Consumer Commission",
+    "source_url": "https://www.pib.gov.in/pressreleaseiframepage.aspx?lang=2&prid=1786342&reg=48"
+},
+
+  {
+    "id": 19,
+    "category": "Complaint Fees",
+    "provision_title": "Fee for Making Consumer Complaints",
+    "document_name": "Consumer Protection (Consumer Disputes Redressal Commissions) Rules, 2020",
+    "section_or_rule": "Rule 7(2)",
+    "plain_summary": "The filing fee is based on the value of goods or services paid as consideration. As per the 2023 amendment: Up to Rs. 5 lakh – Nil; above Rs. 5 lakh to Rs. 10 lakh – Rs. 200; above Rs. 10 lakh to Rs. 20 lakh – Rs. 400; above Rs. 20 lakh to Rs. 50 lakh – Rs. 1,000; above Rs. 50 lakh to Rs. 1 crore – Rs. 2,000; above Rs. 1 crore to Rs. 2 crore – Rs. 2,500; above Rs. 2 crore to Rs. 4 crore – Rs. 3,000; above Rs. 4 crore to Rs. 6 crore – Rs. 4,000; above Rs. 6 crore to Rs. 8 crore – Rs. 5,000; above Rs. 8 crore to Rs. 10 crore – Rs. 6,000; above Rs. 10 crore – Rs. 7,500.",
+    "who_it_helps": "Consumers who want to know the complaint filing fee",
+    "source_url": "https://egazette.gov.in/WriteReadData/2023/248158.pdf"
+},
+
+{
+    "id": 20,
+    "category": "E-Commerce Rules",
+    "provision_title": "Grievance Redressal by E-Commerce Entities",
+    "document_name": "Consumer Protection (E-Commerce) Rules, 2020",
+    "section_or_rule": "Rule 4(4) and Rule 4(5)",
+    "plain_summary": "E-commerce entities must establish a grievance redressal mechanism and appoint a grievance officer. The officer must acknowledge consumer complaints within 48 hours and resolve them within one month of receiving the complaint.",
+    "who_it_helps": "Consumers purchasing goods and services online",
+    "source_url": "https://thc.nic.in/Central%20Governmental%20Rules/Consumer%20Protection%20%28E-Commerce%29%20Rules%2C%202020.pdf"
+},
+
+]
+
+
