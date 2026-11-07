@@ -1,4 +1,3 @@
-
 import json
 from pathlib import Path
 from dataclasses import asdict
@@ -8,7 +7,7 @@ from app.models import Record
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Input and output file paths
-RAW_FILE = BASE_DIR / "data" / "raw" / "records_source.json"
+RAW_FILE = BASE_DIR / "data" / "raw" / "records_parsed.json"
 OUTPUT_FILE = BASE_DIR / "data" / "records.json"
 
 # Required fields
@@ -30,7 +29,7 @@ def clean_records():
             raw_records = json.load(file)
 
     except FileNotFoundError:
-        print("Error: records_source.json file not found.")
+        print("Error: records_parsed.json file not found.")
         return
 
     except json.JSONDecodeError:
