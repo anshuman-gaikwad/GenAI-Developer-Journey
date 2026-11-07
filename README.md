@@ -51,3 +51,47 @@ PDFs in data/raw/ -> app/parse_pdfs.py -> data/raw/records_parsed.json -> app/in
 - The Act PDF shows the old jurisdiction limits in Sections 34, 47 and 58. The 2021 Jurisdiction Rules changed them, so always verify current limits and fees on official sources.
 - The India Code PDF link failed to download in my environment, so the Department of Consumer Affairs PDFs are used.
 - This project gives general consumer-rights information and is not legal advice.
+
+## 8. How to Run (Day 04)
+
+### One-time setup (Windows PowerShell)
+
+    cd GenAI-Developer-Journey
+    .\.venv\Scripts\activate
+    pip install -r requirements.txt
+
+If `data/records.json` is missing, create it first:
+
+    python -m app.parse_pdfs
+    python -m app.ingest
+
+### Start the GrahakNyay API
+
+    uvicorn app.main:app --reload
+
+The service runs at http://127.0.0.1:8000. Press Ctrl+C to stop it.
+Interactive test page: http://127.0.0.1:8000/docs
+
+### Endpoints
+
+| Method | URL | What it does |
+|---|---|---|
+| GET | `/health` | Shows that the service is running and how many records are loaded |
+| GET | `/records?limit=3` | Returns the first 3 records (default 10, maximum 100) |
+| GET | `/records/{id}` | Returns one record. Returns 404 if the id does not exist |
+| GET | `/search?q=mediation` | Ranks records using TF-IDF and cosine similarity |
+| POST | `/questions` | Takes a consumer question and returns the closest provisions |
+
+Example for `POST /questions` (send this in the /docs page):
+
+    {"name": "Anshuman", "question": "My laptop stopped working and the seller refused to replace it"}
+
+### Other commands
+
+    python -m app.smart_search      # test the TF-IDF search from the terminal
+    python analysis/explore.py      # print 3 facts about the records with pandas
+
+### Notes
+- Record ids (1 to 36) are added when the records are loaded. `data/records.json` is not changed.
+- Search matches words, not meaning, so a question must share words with a provision to find it.
+- This service gives general consumer-rights information and is not legal advice.
