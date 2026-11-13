@@ -9,12 +9,15 @@ Docs:
     http://127.0.0.1:8000/docs
 """
 
+import json
 import re
+from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 
+from app.llm import generate_response
 from app.smart_search import RECORDS, rank_records
 
 
@@ -32,9 +35,13 @@ DISCLAIMER = (
     "Please verify current rules and fees on official government sources."
 )
 
+# Project folders
+BASE_DIR = Path(__file__).resolve().parent.parent
+PROMPTS_DIR = BASE_DIR / "prompts"
+
 
 # ---------------------------------------------------------------
-# Request model for POST /questions
+# Request models
 # ---------------------------------------------------------------
 
 class Question(BaseModel):
@@ -50,17 +57,19 @@ class Question(BaseModel):
     )
 
 
+class ChatQuestion(BaseModel):
+    question: str = Field(
+        ...,
+        min_length=3,
+        description="Ask a consumer-rights question"
+    )
+
+
 # ---------------------------------------------------------------
-# Check whether the question asks for a case decision timeline
+# Helper: Check case-decision timeline questions
 # ---------------------------------------------------------------
 
 def is_timeline_question(question):
-    """
-    Identify questions asking how long a consumer case will take.
-
-    The current GrahakNyay dataset does not contain reliable
-    case-specific decision timelines.
-    """
     question = question.lower()
 
     asks_duration = bool(
@@ -79,6 +88,82 @@ def is_timeline_question(question):
     )
 
     return asks_duration and mentions_case
+
+
+# ---------------------------------------------------------------
+# Helper: Read prompt files
+# ---------------------------------------------------------------
+
+def read_prompt(filename):
+    prompt_path = PROMPTS_DIR / filename
+
+    if not prompt_path.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"Prompt file not found: {filename}"
+        )
+
+    return prompt_path.read_text(encoding="utf-8")
+
+
+# ---------------------------------------------------------------
+# Helper: Parse the LLM JSON response
+# ---------------------------------------------------------------
+
+def parse_chat_response(response_text):
+    """
+    Convert the LLM response into the required JSON fields.
+    """
+
+    cleaned_text = response_text.strip()
+
+    # Remove Markdown code fences if the model adds them.
+    if cleaned_text.startswith("```"):
+        cleaned_text = re.sub(
+            r"^```(?:json)?\s*",
+            "",
+            cleaned_text,
+            flags=re.IGNORECASE
+        )
+        cleaned_text = re.sub(r"\s*```$", "", cleaned_text)
+
+    try:
+        result = json.loads(cleaned_text)
+
+        answer = result.get("answer")
+        confidence = result.get("confidence")
+        follow_up = result.get("follow_up")
+
+        if not isinstance(answer, str):
+            raise ValueError("The answer field must be text.")
+
+        if isinstance(confidence, bool) or not isinstance(
+            confidence, (int, float)
+        ):
+            raise ValueError("Confidence must be a number.")
+
+        confidence = float(confidence)
+
+        if not 0.0 <= confidence <= 1.0:
+            raise ValueError("Confidence must be between 0 and 1.")
+
+        if follow_up is not None and not isinstance(follow_up, str):
+            raise ValueError("Follow-up must be text or null.")
+
+        return {
+            "answer": answer,
+            "confidence": confidence,
+            "follow_up": follow_up
+        }
+
+    except (json.JSONDecodeError, ValueError, AttributeError):
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "The AI provider returned an invalid response. "
+                "Please try again."
+            )
+        )
 
 
 # ---------------------------------------------------------------
@@ -166,14 +251,8 @@ def search(
 
 @app.post("/questions")
 def ask_question(body: Question):
-    """
-    Receive a consumer question and return relevant legal provisions.
+    """Return relevant legal provisions for a consumer question."""
 
-    Case-decision timeline questions are not answered because the
-    current dataset does not contain reliable case-specific timelines.
-    """
-
-    # Check for information not available in the current dataset.
     if is_timeline_question(body.question):
         return {
             "name": body.name,
@@ -189,7 +268,6 @@ def ask_question(body: Question):
             "disclaimer": DISCLAIMER
         }
 
-    # Search for relevant records.
     matches = rank_records(body.question, top_k=3)
 
     if matches:
@@ -220,3 +298,62 @@ def ask_question(body: Question):
         "matches": matches,
         "disclaimer": DISCLAIMER
     }
+
+
+# ---------------------------------------------------------------
+# POST /chat
+# ---------------------------------------------------------------
+
+@app.post("/chat")
+def chat_with_grahaknyay(body: ChatQuestion):
+    """
+    Answer a consumer question using:
+    - GrahakNyay system prompt
+    - Consumer question task prompt
+    - Relevant legal records
+    - Gemini or Groq through app/llm.py
+    """
+
+    # Read prompt files
+    system_prompt = read_prompt("system.txt")
+    task_prompt = read_prompt("task_consumer_question.txt")
+
+    # Find relevant legal records
+    matches = rank_records(body.question, top_k=3)
+
+    # Prepare records as readable JSON
+    context = json.dumps(
+        matches,
+        ensure_ascii=False,
+        indent=2
+    )
+
+    # Fill the task prompt placeholders
+    user_prompt = task_prompt.replace(
+        "{question}", body.question
+    ).replace(
+        "{context}", context
+    )
+
+    # Combine system and task prompts
+    complete_prompt = (
+        f"{system_prompt}\n\n"
+        f"{user_prompt}\n\n"
+        f"Reminder: {DISCLAIMER}"
+    )
+
+    try:
+        # Generate response using the configured LLM provider
+        ai_response = generate_response(complete_prompt)
+
+        # Ensure the response has the required JSON fields
+        return parse_chat_response(ai_response)
+
+    except HTTPException:
+        raise
+
+    except Exception as error:
+        raise HTTPException(
+            status_code=502,
+            detail=f"AI provider request failed: {str(error)}"
+        )

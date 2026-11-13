@@ -1,0 +1,17 @@
+TASK: IDENTIFY MISSING INFORMATION
+
+Check whether the supplied GrahakNyay records contain
+enough information to answer the consumer's question.
+
+Instructions:
+- Do not guess or create missing legal information.
+- Clearly explain what information is missing.
+- Ask the consumer for one useful detail if it can help.
+- If the current database cannot answer the question,
+  say that it cannot be answered from the available records.
+
+Consumer question:
+{question}
+
+Available legal records:
+{context}

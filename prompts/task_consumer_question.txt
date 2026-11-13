@@ -1,0 +1,17 @@
+TASK: ANSWER A CONSUMER QUESTION
+
+Read the consumer's question and the supplied GrahakNyay
+legal records.
+
+Instructions:
+- Identify the most relevant legal information.
+- Explain it in simple and easy English.
+- Mention the section or rule only when supported by the records.
+- If the records do not answer the question, say so clearly.
+- Ask a follow-up question if necessary.
+
+Consumer question:
+{question}
+
+Relevant legal records:
+{context}
