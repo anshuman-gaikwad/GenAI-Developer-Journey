@@ -9,6 +9,7 @@ Docs:
     http://127.0.0.1:8000/docs
 """
 
+from app.vectorstore import semantic_search
 import json
 import re
 from pathlib import Path
@@ -357,3 +358,34 @@ def chat_with_grahaknyay(body: ChatQuestion):
             status_code=502,
             detail=f"AI provider request failed: {str(error)}"
         )
+
+
+
+
+
+# ---------------------------------------------------------------
+# GET /search/semantic?q=
+# ---------------------------------------------------------------
+
+@app.get("/search/semantic")
+def semantic_search_api(
+    q: str = Query(
+        ...,
+        min_length=1,
+        description="Question to search in legal documents"
+    ),
+    top_k: int = Query(
+        default=5,
+        ge=1,
+        le=20
+    )
+):
+    """Search legal documents using semantic similarity."""
+
+    results = semantic_search(q, top_k=top_k)
+
+    return {
+        "query": q,
+        "count": len(results),
+        "results": results
+    }

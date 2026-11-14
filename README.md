@@ -95,3 +95,89 @@ Example for `POST /questions` (send this in the /docs page):
 - Record ids (1 to 36) are added when the records are loaded. `data/records.json` is not changed.
 - Search matches words, not meaning, so a question must share words with a provision to find it.
 - This service gives general consumer-rights information and is not legal advice.
+
+## 9. Semantic Search and Vector Database (Day 07)
+
+Day 07 adds semantic search to GrahakNyay. It helps users find relevant legal information based on the meaning of their questions instead of matching only exact words.
+
+### Data Pipeline (Day 07)
+
+Official PDF documents → `app/chunking.py` → Document chunks → `app/embed.py` → Embeddings → `app/vectorstore.py` → Persistent ChromaDB collection
+
+### Files and Their Purpose
+
+| File | What it does |
+|---|---|
+| `app/chunking.py` | Splits legal PDF documents into smaller text chunks while keeping the document title, source filename and page number. |
+| `app/embed.py` | Converts document text into numerical embeddings using an embedding model. |
+| `app/vectorstore.py` | Stores document embeddings and metadata in a persistent ChromaDB collection and performs semantic searches. |
+| `eval/run_search_eval.py` | Tests semantic search using 10 consumer questions. |
+| `eval/search_results.md` | Stores the search results, including matching document sources and page numbers. |
+
+### How to Run (Windows PowerShell)
+
+Activate the virtual environment:
+
+    .\.venv\Scripts\activate
+
+Generate document chunks:
+
+    python -m app.chunking
+
+Generate embeddings:
+
+    python -m app.embed
+
+Create and index the persistent ChromaDB collection:
+
+    python -m app.vectorstore
+
+Run semantic search evaluation for 10 questions:
+
+    python -m eval.run_search_eval
+
+### Semantic Search API
+
+Start the API:
+
+    uvicorn app.main:app --reload
+
+Open the Swagger UI:
+
+    http://127.0.0.1:8000/docs
+
+**Endpoint:**
+
+| Method | URL | What it does |
+|---|---|---|
+| GET | `/search/semantic?q=your question` | Finds relevant legal document chunks using semantic similarity. |
+
+Example:
+
+    /search/semantic?q=What can I do if I purchased a defective laptop?
+
+### Day 07 Results
+
+- Successfully generated **152 document chunks**.
+- Preserved document title, source filename and page number in chunk metadata.
+- Generated embeddings successfully with 384 dimensions.
+- Indexed all 152 chunks into a persistent ChromaDB collection.
+- Tested semantic search with 10 consumer questions.
+- Saved search evaluation results in `eval/search_results.md`.
+- Successfully tested the semantic search API in Swagger UI with HTTP 200.
+
+### Technologies Used
+
+- Python
+- PyPDF
+- Sentence Transformers
+- Embeddings
+- ChromaDB
+- FastAPI
+
+### Known Limitations
+
+- Search results depend on the quality of the document chunks and embeddings.
+- Some PDF text may contain formatting or encoding issues.
+- Semantic search retrieves relevant text but does not independently verify legal accuracy.
+- GrahakNyay provides general consumer-rights information and is not legal advice.

@@ -5,5 +5,7 @@ __pycache__/
 .venv/
 __pycache__/
 
+# ChromaDB persistent database
+data/chroma_db/
 
 
