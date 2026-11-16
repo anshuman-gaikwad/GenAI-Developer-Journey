@@ -55,3 +55,22 @@ The improved GrahakNyay system prompt that:
 
 Complete this section after testing both prompt versions.
 Record which version gives more accurate, clear, and reliable answers.
+
+
+## Final Evaluation Results
+
+| Configuration | Top K | Passed | Total | Accuracy |
+|---|---:|---:|---:|---:|
+| Config 1 | 3 | 15 | 15 | 100% |
+| Config 2 | 5 | 15 | 15 | 100% |
+
+### Conclusion
+
+Both configurations achieved 100% accuracy on the 15 evaluation questions.
+
+There is no accuracy difference between the two configurations.
+Config 1 (Top K = 3) is selected because it retrieves fewer chunks,
+which can reduce processing and token usage.
+
+**Selected Configuration: Config 1 (Top K = 3)**
+

@@ -181,3 +181,54 @@ Example:
 - Some PDF text may contain formatting or encoding issues.
 - Semantic search retrieves relevant text but does not independently verify legal accuracy.
 - GrahakNyay provides general consumer-rights information and is not legal advice.
+
+
+## 10. RAG and Answer Generation (Day 08)
+
+Day 08 adds Retrieval-Augmented Generation (RAG) to GrahakNyay. It retrieves relevant legal information from document chunks and generates simple answers with source citations.
+
+### Files and Their Purpose
+
+| File | What it does |
+|---|---|
+| `app/rag.py` | Retrieves relevant chunks and generates answers with citations. |
+| `app/llm.py` | Connects to the language model to generate answers. |
+| `eval/eval_set.json` | Contains 15 consumer-related evaluation questions. |
+| `eval/run_eval.py` | Evaluates RAG answers using two configurations. |
+| `eval/prompt_compare.md` | Stores the prompt comparison and evaluation results. |
+
+### RAG API Endpoint
+
+| Method | URL | What it does |
+|---|---|---|
+| POST | `/ask` | Answers consumer questions using retrieved legal information and citations. |
+
+Example question:
+
+`What can a consumer do if a purchased product is defective?`
+
+### Day 08 Evaluation Results
+
+| Configuration | Top K | Passed | Total | Accuracy |
+|---|---:|---:|---:|---:|
+| Config 1 | 3 | 15 | 15 | 100% |
+| Config 2 | 5 | 15 | 15 | 100% |
+
+**Winner:** Both configurations achieved equal accuracy. Config 1 was selected because it retrieves fewer chunks.
+
+### Important Features
+
+- Retrieves relevant legal information using semantic search.
+- Generates answers using the retrieved legal context.
+- Provides document source and page citations.
+- Responds with "I don't know" when the available context does not contain the answer.
+- Provides general consumer-rights information, not legal advice.
+
+### Technologies Used
+
+- Python
+- FastAPI
+- ChromaDB
+- Sentence Transformers
+- Groq / Gemini API
+- Retrieval-Augmented Generation (RAG)

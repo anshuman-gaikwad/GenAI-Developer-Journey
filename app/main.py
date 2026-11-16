@@ -10,6 +10,7 @@ Docs:
 """
 
 from app.vectorstore import semantic_search
+from app.rag import answer_question
 import json
 import re
 from pathlib import Path
@@ -389,3 +390,30 @@ def semantic_search_api(
         "count": len(results),
         "results": results
     }
+
+# ---------------------------------------------------------------
+# POST /ask
+# ---------------------------------------------------------------
+
+@app.post("/ask")
+def ask_with_rag(body: ChatQuestion):
+    """
+    Answer consumer questions using RAG.
+    Returns an answer with citations.
+    """
+
+    try:
+        result = answer_question(body.question)
+
+        return {
+            "question": body.question,
+            "answer": result["answer"],
+            "citations": result["citations"],
+            "disclaimer": DISCLAIMER
+        }
+
+    except Exception as error:
+        raise HTTPException(
+            status_code=502,
+            detail=f"RAG request failed: {str(error)}"
+        )

@@ -1,0 +1,78 @@
+
+[
+  {
+    "id": 1,
+    "question": "What are the basic rights of consumers?",
+    "expected": "Consumer rights"
+  },
+  {
+    "id": 2,
+    "question": "What can I do if my purchased laptop is defective?",
+    "expected": "Defective product"
+  },
+  {
+    "id": 3,
+    "question": "What is deficiency in service?",
+    "expected": "Deficiency in service"
+  },
+  {
+    "id": 4,
+    "question": "What is an unfair trade practice?",
+    "expected": "Unfair trade practice"
+  },
+  {
+    "id": 5,
+    "question": "How can I file a consumer complaint?",
+    "expected": "Complaint filing"
+  },
+  {
+    "id": 6,
+    "question": "What is the right to be informed?",
+    "expected": "Right to be informed"
+  },
+  {
+    "id": 7,
+    "question": "What is product liability?",
+    "expected": "Product liability"
+  },
+  {
+    "id": 8,
+    "question": "What can I do if a seller refuses a refund?",
+    "expected": "Refund refusal"
+  },
+  {
+    "id": 9,
+    "question": "What is consumer mediation?",
+    "expected": "Consumer mediation"
+  },
+  {
+    "id": 10,
+    "question": "How much time does a consumer commission take to decide a case?",
+    "expected": "I don't know"
+  },
+  {
+    "id": 11,
+    "question": "Which consumer commission should I approach for my complaint?",
+    "expected": "Consumer commission jurisdiction"
+  },
+  {
+    "id": 12,
+    "question": "What is the limitation period for filing a consumer complaint?",
+    "expected": "Limitation period"
+  },
+  {
+    "id": 13,
+    "question": "What is the role of a product seller in product liability?",
+    "expected": "Product seller liability"
+  },
+  {
+    "id": 14,
+    "question": "Can a consumer file a complaint online?",
+    "expected": "Online complaint filing"
+  },
+  {
+    "id": 15,
+    "question": "What is the role of the Consumer Protection Act 2019?",
+    "expected": "Consumer Protection Act"
+  }
+]
