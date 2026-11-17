@@ -232,3 +232,67 @@ Example question:
 - Sentence Transformers
 - Groq / Gemini API
 - Retrieval-Augmented Generation (RAG)
+
+
+## 11. Agent Tools and LangGraph (Day 09)
+
+Day 09 adds an agent system to GrahakNyay. The agent chooses between
+semantic legal search and a commission/filing-fee calculator.
+
+### Files and Their Purpose
+
+| File | What it does |
+|---|---|
+| `app/tools.py` | Finds the correct Consumer Commission, complaint fee and indicative filing deadline. |
+| `app/agent_loop.py` | Hand-written agent that selects between RAG search and the calculator. |
+| `app/graph.py` | Rebuilds the agent using LangGraph with memory and an approval step. |
+| `app/main.py` | Provides the `POST /agent` API endpoint. |
+
+### Legal Rules Used
+
+- Jurisdiction: Consumer Protection (Jurisdiction of the District Commission, the State Commission and the National Commission) Rules, 2021.
+- Complaint fee: Rule 7(2) of the Consumer Protection (Consumer Disputes Redressal Commissions) Rules, 2020, as amended in 2023.
+- Limitation period: Section 69 of the Consumer Protection Act, 2019.
+
+### How to Run
+
+Activate the virtual environment:
+
+    .\.venv\Scripts\activate
+
+Install dependencies:
+
+    pip install -r requirements.txt
+
+Run the simple agent:
+
+    python -m app.agent_loop
+
+Start the API:
+
+    uvicorn app.main:app --reload
+
+Open Swagger:
+
+    http://127.0.0.1:8000/docs
+
+### Agent API
+
+| Method | URL | What it does |
+|---|---|---|
+| POST | `/agent` | Runs the GrahakNyay LangGraph agent. |
+
+The agent uses RAG for legal questions and the calculator for
+commission, fee and filing-deadline questions.
+
+Calculator requests pause for user approval before execution.
+The same thread ID is used to resume the request.
+
+### Important Limitations
+
+- The two-year deadline is an indicative calculation based on the date supplied by the user.
+- Section 69 allows delay to be condoned in appropriate cases.
+- The user must provide the correct cause-of-action date.
+- Commission jurisdiction is based on the value paid as consideration.
+- LangGraph development memory uses an in-memory checkpointer and is cleared when the application restarts.
+- GrahakNyay provides general consumer-rights information and is not legal advice.

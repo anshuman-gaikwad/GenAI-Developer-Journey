@@ -13,11 +13,14 @@ from app.vectorstore import semantic_search
 from app.rag import answer_question
 import json
 import re
+import uuid
 from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
+
+from app.graph import run_agent_graph
 
 from app.llm import generate_response
 from app.smart_search import RECORDS, rank_records
@@ -417,3 +420,47 @@ def ask_with_rag(body: ChatQuestion):
             status_code=502,
             detail=f"RAG request failed: {str(error)}"
         )
+# --------------------------------------------------
+# POST /agent - GrahakNyay LangGraph Agent
+# --------------------------------------------------
+
+class AgentRequest(BaseModel):
+    question: str = ""
+    amount_paid: Optional[float] = None
+    cause_date: Optional[str] = None
+    thread_id: Optional[str] = None
+    approved: Optional[bool] = None
+
+
+@app.post("/agent")
+def agent_endpoint(body: AgentRequest):
+    """
+    Run the GrahakNyay LangGraph agent.
+
+    A calculator request first returns an approval request.
+    Send the same thread_id with approved=true or false to resume.
+    """
+
+    # Resuming a paused approval request
+    if body.approved is not None:
+
+        if not body.thread_id:
+            return {
+                "error": "thread_id is required to resume approval."
+            }
+
+        return run_agent_graph(
+            question=body.question,
+            thread_id=body.thread_id,
+            approved=body.approved
+        )
+
+    # Starting a new agent request
+    thread_id = body.thread_id or str(uuid.uuid4())
+
+    return run_agent_graph(
+        question=body.question,
+        amount_paid=body.amount_paid,
+        cause_date=body.cause_date,
+        thread_id=thread_id
+    )
