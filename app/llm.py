@@ -1,8 +1,6 @@
 
 """
-llm.py - Day 06
-
-GrahakNyay LLM Provider Wrapper.
+llm.py - GrahakNyay LLM Provider Wrapper.
 Supports Google Gemini and Groq.
 """
 
@@ -11,22 +9,19 @@ from dotenv import load_dotenv
 from google import genai
 from groq import Groq
 
-# Load environment variables from .env
 load_dotenv()
 
 
 def generate_response(prompt):
-    """
-    Send a prompt to the selected LLM provider
-    and return the generated response.
-    """
+    """Send a prompt to the selected LLM provider."""
 
-    provider = os.getenv("LLM_PROVIDER", "gemini").lower()
+    provider = os.getenv("LLM_PROVIDER", "gemini").lower().strip()
+
+    if not prompt or not prompt.strip():
+        raise ValueError("Prompt cannot be empty.")
 
     try:
-        # ---------------- GEMINI PROVIDER ----------------
         if provider == "gemini":
-
             api_key = os.getenv("GEMINI_API_KEY")
             model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
@@ -40,11 +35,9 @@ def generate_response(prompt):
                 contents=prompt
             )
 
-            return response.text
+            result = response.text
 
-        # ---------------- GROQ PROVIDER ----------------
         elif provider == "groq":
-
             api_key = os.getenv("GROQ_API_KEY")
             model = os.getenv("GROQ_MODEL")
 
@@ -59,20 +52,22 @@ def generate_response(prompt):
             response = client.chat.completions.create(
                 model=model,
                 messages=[
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
+                    {"role": "user", "content": prompt}
                 ],
                 temperature=0.3
             )
 
-            return response.choices[0].message.content
+            result = response.choices[0].message.content
 
         else:
             raise ValueError(
                 "Invalid LLM_PROVIDER. Choose 'gemini' or 'groq'."
             )
+
+        if not result or not result.strip():
+            raise RuntimeError("The LLM returned an empty response.")
+
+        return result.strip()
 
     except Exception as error:
         raise RuntimeError(

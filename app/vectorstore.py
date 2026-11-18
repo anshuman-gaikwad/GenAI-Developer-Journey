@@ -49,16 +49,15 @@ def index_documents():
     collection = get_collection()
 
     texts = [chunk["text"] for chunk in chunks]
-
     embeddings = embed_documents(texts)
 
     ids = [chunk["id"] for chunk in chunks]
 
     metadatas = [
         {
-            "title": chunk["title"],
-            "source": chunk["source"],
-            "page": chunk["page"]
+            "title": str(chunk.get("title", "Unknown")),
+            "source": str(chunk.get("source", "Unknown")),
+            "page": int(chunk.get("page", 0))
         }
         for chunk in chunks
     ]
@@ -80,19 +79,25 @@ def index_documents():
 def semantic_search(query, top_k=5):
     """Find relevant document chunks for a question."""
 
-    if not query.strip():
+    if not query or not query.strip():
+        return []
+
+    if top_k <= 0:
         return []
 
     collection = get_collection()
 
-    if collection.count() == 0:
+    total_chunks = collection.count()
+
+    if total_chunks == 0:
+        print("ChromaDB collection is empty.")
         return []
 
-    query_embedding = embed_query(query)
+    query_embedding = embed_query(query.strip())
 
     results = collection.query(
         query_embeddings=[query_embedding],
-        n_results=min(top_k, collection.count()),
+        n_results=min(top_k, total_chunks),
         include=[
             "documents",
             "metadatas",
@@ -102,14 +107,22 @@ def semantic_search(query, top_k=5):
 
     matches = []
 
-    for index in range(len(results["ids"][0])):
+    ids = results.get("ids", [[]])[0]
+    documents = results.get("documents", [[]])[0]
+    metadatas = results.get("metadatas", [[]])[0]
+    distances = results.get("distances", [[]])[0]
+
+    for index, chunk_id in enumerate(ids):
+
+        metadata = metadatas[index] or {}
 
         matches.append({
-            "text": results["documents"][0][index],
-            "title": results["metadatas"][0][index]["title"],
-            "source": results["metadatas"][0][index]["source"],
-            "page": results["metadatas"][0][index]["page"],
-            "distance": results["distances"][0][index]
+            "id": chunk_id,
+            "text": documents[index] or "",
+            "title": metadata.get("title", "Unknown"),
+            "source": metadata.get("source", "Unknown"),
+            "page": metadata.get("page", 0),
+            "distance": distances[index]
         })
 
     return matches
