@@ -296,3 +296,122 @@ The same thread ID is used to resume the request.
 - Commission jurisdiction is based on the value paid as consideration.
 - LangGraph development memory uses an in-memory checkpointer and is cleared when the application restarts.
 - GrahakNyay provides general consumer-rights information and is not legal advice.
+
+## Day 10 — Streamlit User Interface
+
+Day 10 focused on building a user-friendly interface for GrahakNyay using Streamlit.
+
+### Features implemented
+
+- **Consumer-rights chat:** Ask questions through a Streamlit chat interface connected to the FastAPI backend.
+- **RAG and Agent modes:** Choose between the `/ask` and `/agent` endpoints.
+- **Source citations:** Display legal document references with clickable links to official sources when available.
+- **User feedback:** Thumbs up and thumbs down buttons save feedback in JSONL format.
+- **Where do I file?:** Calculate the appropriate Consumer Commission, filing fee, and indicative complaint filing deadline.
+- **API status:** Display the backend connection status in the sidebar.
+- **Legal disclaimer:** Explain that generated responses are informational and not legal advice.
+
+### Run the application locally
+
+Start the FastAPI backend:
+
+```bash
+python -m uvicorn app.main:app --reload
+```
+
+Open another terminal and start Streamlit:
+
+```bash
+python -m streamlit run ui/app.py
+```
+
+Access the application:
+
+- Streamlit UI: http://localhost:8501
+- FastAPI documentation: http://localhost:8000/docs
+
+**Implementation:** Completed. Final live UI verification should be performed before release.
+
+---
+
+## Day 11 — Testing, Code Quality and Docker
+
+Day 11 focuses on automated testing, code quality, and containerizing GrahakNyay.
+
+### S1 — Automated Testing and Ruff
+
+**Status: Completed**
+
+Created automated tests in the `tests/` directory.
+
+Tests cover:
+
+- API health endpoint (`/health`)
+- Legal records retrieval
+- Record limits and missing records
+- Search endpoint (`/search`)
+- RAG answer endpoint (`/ask`) using a fake response
+- Invalid question validation
+- Agent endpoint (`/agent`)
+- Consumer Commission and filing fee calculations
+- Date handling and invalid inputs
+
+**Test results:**
+
+```text
+14 passed
+```
+
+Run the complete test suite:
+
+```bash
+python -m pytest -v
+```
+
+Run Ruff:
+
+```bash
+python -m ruff check .
+```
+
+Ruff verification result:
+
+```text
+All checks passed!
+```
+
+### S2 — Docker Containerization
+
+**Status: Pending implementation and verification**
+
+The following files will be added:
+
+- `Dockerfile` — Defines the Python environment and application image.
+- `.dockerignore` — Excludes unnecessary and sensitive files from the build context.
+- `docker-compose.yml` — Configures the FastAPI and Streamlit services.
+
+### Run with Docker
+
+**Note:** Docker support is planned but has not yet been tested.
+
+Once the Docker configuration is implemented, the intended startup command is:
+
+```bash
+docker compose up --build
+```
+
+Expected application URLs:
+
+- Streamlit UI: http://localhost:8501
+- FastAPI: http://localhost:8000
+- API documentation: http://localhost:8000/docs
+
+The Docker setup will be verified on a machine with Docker Desktop installed.
+
+### Remaining work
+
+- Create and configure the Docker files.
+- Verify Docker image builds and dependency installation.
+- Start the API and UI using Docker Compose.
+- Test API connectivity, RAG responses, citations, and feedback persistence.
+- Update this README after successful Docker verification.
