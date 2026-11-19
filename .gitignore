@@ -14,3 +14,15 @@ __pycache__/
 *.py[cod]
 data/chroma_db/
 
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+.pytest_cache/
+.ruff_cache/
+data/chroma_db/
+data/feedback.jsonl
+ui/feedback.jsonl

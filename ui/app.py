@@ -19,7 +19,7 @@ import json
 import os
 import sys
 import uuid
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 import requests
@@ -31,7 +31,6 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 
-
 # ==================================================================
 # Citations -> clickable links
 # ==================================================================
@@ -41,19 +40,25 @@ if str(ROOT) not in sys.path:
 SOURCE_LINKS = {
     "consumer_protection_act_2019.pdf": (
         "Consumer Protection Act, 2019",
-        "https://consumeraffairs.gov.in/public/upload/files/"
-        "CP%20Act%202019_1732700731.pdf",
+        (
+            "https://consumeraffairs.gov.in/public/upload/files/"
+            "CP%20Act%202019_1732700731.pdf"
+        ),
     ),
     "ecommerce_rules_2020.pdf": (
         "Consumer Protection (E-Commerce) Rules, 2020",
-        "https://consumeraffairs.gov.in/public/upload/files/"
-        "E%20commerce%20rules_1732703966.pdf",
+        (
+            "https://consumeraffairs.gov.in/public/upload/files/"
+            "E%20commerce%20rules_1732703966.pdf"
+        ),
     ),
     "ecommerce_amendment_rules_2021.pdf": (
         "Consumer Protection (E-Commerce) (Amendment) Rules, 2021",
-        "https://consumeraffairs.gov.in/public/upload/files/"
-        "Consumer%20Protection%20%28E-Commerce%29%20%28Amendment%29"
-        "%20Rules%2C%202021_1732704241.pdf",
+        (
+            "https://consumeraffairs.gov.in/public/upload/files/"
+            "Consumer%20Protection%20%28E-Commerce%29%20%28Amendment%29"
+            "%20Rules%2C%202021_1732704241.pdf"
+        ),
     ),
 }
 
@@ -125,7 +130,7 @@ TIERS = [
 
 def format_inr(amount):
     """Format a number the Indian way: 3800000 -> '₹38,00,000'."""
-    amount = int(round(float(amount)))
+    amount = round(float(amount))
     sign = "-" if amount < 0 else ""
     digits = str(abs(amount))
 
@@ -189,19 +194,18 @@ def build_card(calc, today=None):
             "detail": dict(TIERS).get(commission, ""),
             "citation_text": (
                 f"Jurisdiction Rules, 2021, {rule} (G.S.R. 912(E))"
-                if rule else "Jurisdiction Rules, 2021"
+                if rule
+                else "Jurisdiction Rules, 2021"
             ),
             "citation_url": JURISDICTION_URL,
         },
         "fee": {
             "value": "Nil (₹0)" if fee == 0 else format_inr(fee),
             "detail": (
-                "No fee up to ₹5 lakh" if fee == 0
-                else "Fee slab for the amount paid"
+                "No fee up to ₹5 lakh" if fee == 0 else "Fee slab for the amount paid"
             ),
             "citation_text": (
-                "CDRC Rules, 2020, Rule 7(2), as amended "
-                "(G.S.R. 606(E), 2023)"
+                "CDRC Rules, 2020, Rule 7(2), as amended (G.S.R. 606(E), 2023)"
             ),
             "citation_url": FEE_RULES_URL,
         },
@@ -226,15 +230,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 FEEDBACK_FILE = BASE_DIR / "data" / "feedback.jsonl"
 
 
-def save_feedback(rating, question, answer, citations=None,
-                  engine="ask", path=None):
+def save_feedback(rating, question, answer, citations=None, engine="ask", path=None):
     """Append one rating ("up" or "down"). Returns the saved record."""
 
     if rating not in ("up", "down"):
         raise ValueError("rating must be 'up' or 'down'")
 
     record = {
-        "time": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "time": datetime.now(UTC).isoformat(timespec="seconds"),
         "rating": rating,
         "engine": engine,
         "question": question,
@@ -319,9 +322,7 @@ def _post(base_url, path, payload, timeout):
 def health(base_url, timeout=3):
     """Return the /health JSON, or None when the API is down."""
     try:
-        response = requests.get(
-            base_url.rstrip("/") + "/health", timeout=timeout
-        )
+        response = requests.get(base_url.rstrip("/") + "/health", timeout=timeout)
         return response.json() if response.status_code == 200 else None
     except (requests.exceptions.RequestException, ValueError):
         return None
@@ -455,6 +456,7 @@ PAGE_FILE = "📍 Where do I file?"
 # Session state
 # ------------------------------------------------------------------
 
+
 def init_state():
     st.session_state.setdefault("messages", [])
     st.session_state.setdefault("filing", None)
@@ -463,6 +465,7 @@ def init_state():
 # ------------------------------------------------------------------
 # Feedback
 # ------------------------------------------------------------------
+
 
 def rate_message(message_id, rating):
     """Callback for the thumbs buttons: save the rating to disk."""
@@ -490,6 +493,7 @@ def rate_message(message_id, rating):
 # Chat page
 # ------------------------------------------------------------------
 
+
 def render_message(message):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
@@ -508,17 +512,24 @@ def render_message(message):
 
         rating = message.get("rating")
         if rating:
-            st.caption("👍 Thanks for the feedback!" if rating == "up"
-                       else "👎 Thanks - we will use this to improve.")
+            st.caption(
+                "👍 Thanks for the feedback!"
+                if rating == "up"
+                else "👎 Thanks - we will use this to improve."
+            )
         else:
             col_up, col_down, _ = st.columns([1, 1, 8])
             col_up.button(
-                "👍", key=f"up_{message['id']}",
-                on_click=rate_message, args=(message["id"], "up"),
+                "👍",
+                key=f"up_{message['id']}",
+                on_click=rate_message,
+                args=(message["id"], "up"),
             )
             col_down.button(
-                "👎", key=f"down_{message['id']}",
-                on_click=rate_message, args=(message["id"], "down"),
+                "👎",
+                key=f"down_{message['id']}",
+                on_click=rate_message,
+                args=(message["id"], "down"),
             )
 
 
@@ -565,9 +576,13 @@ def chat_page(base_url, engine):
     question = question or st.session_state.pop("pending", None)
 
     if question:
-        st.session_state.messages.append({
-            "id": str(uuid.uuid4()), "role": "user", "content": question,
-        })
+        st.session_state.messages.append(
+            {
+                "id": str(uuid.uuid4()),
+                "role": "user",
+                "content": question,
+            }
+        )
         with st.spinner("Searching the legal documents..."):
             answer = get_answer(question, base_url, engine)
         st.session_state.messages.append(answer)
@@ -577,6 +592,7 @@ def chat_page(base_url, engine):
 # ------------------------------------------------------------------
 # "Where do I file?" card
 # ------------------------------------------------------------------
+
 
 def run_filing_lookup(base_url, amount, cause_date):
     """Use /agent; fall back to the local calculator if the API is down."""
@@ -609,8 +625,7 @@ def show_card(card):
             st.metric("File with", commission["value"])
             st.caption(commission["detail"])
             st.markdown(
-                f"[{commission['citation_text']}]"
-                f"({commission['citation_url']})"
+                f"[{commission['citation_text']}]({commission['citation_url']})"
             )
 
         fee = card["fee"]
@@ -626,9 +641,7 @@ def show_card(card):
                 st.caption(f"⚠️ {abs(deadline['days_left'])} days past")
             else:
                 st.caption(f"{deadline['days_left']} days left")
-            st.markdown(
-                f"[{deadline['citation_text']}]({deadline['citation_url']})"
-            )
+            st.markdown(f"[{deadline['citation_text']}]({deadline['citation_url']})")
 
         st.markdown("---")
         ladder = []
@@ -646,8 +659,7 @@ def show_card(card):
         st.caption(deadline["detail"])
         st.caption(
             "Based on the amount paid as consideration. The deadline is "
-            "indicative and depends on the correct cause-of-action date. "
-            + DISCLAIMER
+            "indicative and depends on the correct cause-of-action date. " + DISCLAIMER
         )
 
 
@@ -661,7 +673,10 @@ def filing_page(base_url):
     with st.form("filing_form"):
         col_amount, col_date = st.columns(2)
         amount = col_amount.number_input(
-            "Amount paid (₹)", min_value=1, value=38000, step=1000,
+            "Amount paid (₹)",
+            min_value=1,
+            value=38000,
+            step=1000,
         )
         cause_date = col_date.date_input(
             "Date the problem arose (cause of action)",
@@ -683,8 +698,9 @@ def filing_page(base_url):
     card = st.session_state.filing
 
     if card is None:
-        st.info(f"Example: a laptop bought for {format_inr(38000)} "
-                "-> District Commission.")
+        st.info(
+            f"Example: a laptop bought for {format_inr(38000)} -> District Commission."
+        )
         return
 
     if not card["ok"]:
@@ -700,6 +716,7 @@ def filing_page(base_url):
 # ------------------------------------------------------------------
 # Main
 # ------------------------------------------------------------------
+
 
 def sidebar():
     with st.sidebar:
@@ -735,8 +752,7 @@ def sidebar():
 
 
 def main():
-    st.set_page_config(page_title="GrahakNyay", page_icon="⚖️",
-                       layout="wide")
+    st.set_page_config(page_title="GrahakNyay", page_icon="⚖️", layout="wide")
     init_state()
     page, base_url, engine = sidebar()
 

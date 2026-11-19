@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class Record:
     provision_title: str

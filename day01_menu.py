@@ -1,7 +1,6 @@
 # GrahakNyay Menu Program
 
 while True:
-
     print("\n===== GRAHAKNYAY MENU =====")
     print("1. About GrahakNyay")
     print("2. Sample Questions")

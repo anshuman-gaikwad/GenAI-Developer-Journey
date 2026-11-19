@@ -45,8 +45,12 @@ def main():
     longest_row = df.loc[lengths.idxmax()]
     shortest_row = df.loc[lengths.idxmin()]
     print(f"  Average length : {lengths.mean():.0f} characters")
-    print(f"  Longest        : {lengths.max()} characters ({longest_row['section_or_rule']})")
-    print(f"  Shortest       : {lengths.min()} characters ({shortest_row['section_or_rule']})")
+    print(
+        f"  Longest        : {lengths.max()} characters ({longest_row['section_or_rule']})"
+    )
+    print(
+        f"  Shortest       : {lengths.min()} characters ({shortest_row['section_or_rule']})"
+    )
     print(f"  Cut short with '...': {cut_short} of {len(df)} records")
 
 

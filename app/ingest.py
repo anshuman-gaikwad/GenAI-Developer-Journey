@@ -1,6 +1,7 @@
 import json
-from pathlib import Path
 from dataclasses import asdict
+from pathlib import Path
+
 from app.models import Record
 
 # Project folder
@@ -17,7 +18,7 @@ REQUIRED_FIELDS = [
     "section_or_rule",
     "plain_summary",
     "who_it_helps",
-    "source_url"
+    "source_url",
 ]
 
 
@@ -55,7 +56,7 @@ def clean_records():
                 section_or_rule=row["section_or_rule"],
                 plain_summary=row["plain_summary"],
                 who_it_helps=row["who_it_helps"],
-                source_url=row["source_url"]
+                source_url=row["source_url"],
             )
 
             cleaned_records.append(asdict(record))

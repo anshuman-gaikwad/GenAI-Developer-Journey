@@ -1,4 +1,3 @@
-
 """
 tools.py - GrahakNyay Day 09
 
@@ -16,10 +15,7 @@ def add_two_years(input_date):
         return input_date.replace(year=input_date.year + 2)
     except ValueError:
         # For example, 29 February becomes 28 February.
-        return input_date.replace(
-            year=input_date.year + 2,
-            day=28
-        )
+        return input_date.replace(year=input_date.year + 2, day=28)
 
 
 def commission_and_fee_finder(amount_paid, cause_date):
@@ -88,13 +84,13 @@ def commission_and_fee_finder(amount_paid, cause_date):
             ),
             "sources": [
                 "Consumer Protection (Jurisdiction) Rules, 2021",
-                "Consumer Protection (Consumer Disputes Redressal "
-                "Commissions) Rules, 2020, Rule 7(2), as amended in 2023",
-                "Consumer Protection Act, 2019, Section 69"
-            ]
+                (
+                    "Consumer Protection (Consumer Disputes Redressal "
+                    "Commissions) Rules, 2020, Rule 7(2), as amended in 2023"
+                ),
+                "Consumer Protection Act, 2019, Section 69",
+            ],
         }
 
     except (ValueError, TypeError) as error:
-        return {
-            "error": str(error)
-        }
+        return {"error": str(error)}

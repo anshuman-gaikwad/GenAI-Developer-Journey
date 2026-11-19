@@ -1,4 +1,3 @@
-
 """
 run_search_eval.py - GrahakNyay Day 07
 
@@ -10,7 +9,6 @@ from pathlib import Path
 
 from app.vectorstore import semantic_search
 
-
 QUESTIONS = [
     "What are my consumer rights in India?",
     "I purchased a defective laptop online. What can I do?",
@@ -21,7 +19,7 @@ QUESTIONS = [
     "What is product liability?",
     "Can I complain if an online seller refuses a refund?",
     "What is consumer mediation?",
-    "How much time does a consumer commission take to decide a case?"
+    "How much time does a consumer commission take to decide a case?",
 ]
 
 
@@ -36,11 +34,10 @@ def run_evaluation():
         "",
         "Embedding model: all-MiniLM-L6-v2",
         "Vector database: ChromaDB",
-        ""
+        "",
     ]
 
     for number, question in enumerate(QUESTIONS, start=1):
-
         print(f"\nTesting question {number}: {question}")
 
         results = semantic_search(question, top_k=3)
@@ -54,28 +51,17 @@ def run_evaluation():
             continue
 
         for rank, result in enumerate(results, start=1):
-
             lines.append(f"### Result {rank}")
             lines.append(f"- **Title:** {result['title']}")
             lines.append(f"- **Source:** {result['source']}")
             lines.append(f"- **Page:** {result['page']}")
-            lines.append(
-                f"- **Distance:** {result['distance']:.4f}"
-            )
-            lines.append(
-                f"- **Text:** {result['text'][:500]}"
-            )
+            lines.append(f"- **Distance:** {result['distance']:.4f}")
+            lines.append(f"- **Text:** {result['text'][:500]}")
             lines.append("")
 
-            print(
-                f"  Result {rank}: {result['source']} "
-                f"(Page {result['page']})"
-            )
+            print(f"  Result {rank}: {result['source']} (Page {result['page']})")
 
-    OUTPUT_FILE.write_text(
-        "\n".join(lines),
-        encoding="utf-8"
-    )
+    OUTPUT_FILE.write_text("\n".join(lines), encoding="utf-8")
 
     print("\nEvaluation completed.")
     print("Results saved to:", OUTPUT_FILE)

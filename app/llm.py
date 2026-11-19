@@ -1,10 +1,10 @@
-
 """
 llm.py - GrahakNyay LLM Provider Wrapper.
 Supports Google Gemini and Groq.
 """
 
 import os
+
 from dotenv import load_dotenv
 from google import genai
 from groq import Groq
@@ -30,10 +30,7 @@ def generate_response(prompt):
 
             client = genai.Client(api_key=api_key)
 
-            response = client.models.generate_content(
-                model=model,
-                contents=prompt
-            )
+            response = client.models.generate_content(model=model, contents=prompt)
 
             result = response.text
 
@@ -51,18 +48,14 @@ def generate_response(prompt):
 
             response = client.chat.completions.create(
                 model=model,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.3
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.3,
             )
 
             result = response.choices[0].message.content
 
         else:
-            raise ValueError(
-                "Invalid LLM_PROVIDER. Choose 'gemini' or 'groq'."
-            )
+            raise ValueError("Invalid LLM_PROVIDER. Choose 'gemini' or 'groq'.")
 
         if not result or not result.strip():
             raise RuntimeError("The LLM returned an empty response.")

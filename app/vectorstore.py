@@ -1,4 +1,3 @@
-
 """
 vectorstore.py - GrahakNyay Day 07
 
@@ -12,7 +11,6 @@ import chromadb
 from app.chunking import chunk_documents
 from app.embed import embed_documents, embed_query
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 CHROMA_PATH = BASE_DIR / "data" / "chroma_db"
@@ -25,13 +23,10 @@ def get_collection():
 
     CHROMA_PATH.mkdir(parents=True, exist_ok=True)
 
-    client = chromadb.PersistentClient(
-        path=str(CHROMA_PATH)
-    )
+    client = chromadb.PersistentClient(path=str(CHROMA_PATH))
 
     collection = client.get_or_create_collection(
-        name=COLLECTION_NAME,
-        metadata={"hnsw:space": "cosine"}
+        name=COLLECTION_NAME, metadata={"hnsw:space": "cosine"}
     )
 
     return collection
@@ -57,16 +52,13 @@ def index_documents():
         {
             "title": str(chunk.get("title", "Unknown")),
             "source": str(chunk.get("source", "Unknown")),
-            "page": int(chunk.get("page", 0))
+            "page": int(chunk.get("page", 0)),
         }
         for chunk in chunks
     ]
 
     collection.upsert(
-        ids=ids,
-        documents=texts,
-        embeddings=embeddings,
-        metadatas=metadatas
+        ids=ids, documents=texts, embeddings=embeddings, metadatas=metadatas
     )
 
     print("Documents indexed successfully.")
@@ -98,11 +90,7 @@ def semantic_search(query, top_k=5):
     results = collection.query(
         query_embeddings=[query_embedding],
         n_results=min(top_k, total_chunks),
-        include=[
-            "documents",
-            "metadatas",
-            "distances"
-        ]
+        include=["documents", "metadatas", "distances"],
     )
 
     matches = []
@@ -113,17 +101,18 @@ def semantic_search(query, top_k=5):
     distances = results.get("distances", [[]])[0]
 
     for index, chunk_id in enumerate(ids):
-
         metadata = metadatas[index] or {}
 
-        matches.append({
-            "id": chunk_id,
-            "text": documents[index] or "",
-            "title": metadata.get("title", "Unknown"),
-            "source": metadata.get("source", "Unknown"),
-            "page": metadata.get("page", 0),
-            "distance": distances[index]
-        })
+        matches.append(
+            {
+                "id": chunk_id,
+                "text": documents[index] or "",
+                "title": metadata.get("title", "Unknown"),
+                "source": metadata.get("source", "Unknown"),
+                "page": metadata.get("page", 0),
+                "distance": distances[index],
+            }
+        )
 
     return matches
 

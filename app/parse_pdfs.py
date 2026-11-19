@@ -25,7 +25,9 @@ OUTPUT_FILE = RAW_DIR / "records_parsed.json"
 # ---------------------------------------------------------------
 ACT_FILE = "consumer_protection_act_2019.pdf"
 ACT_NAME = "Consumer Protection Act, 2019"
-ACT_URL = "https://consumeraffairs.gov.in/public/upload/files/CP%20Act%202019_1732700731.pdf"
+ACT_URL = (
+    "https://consumeraffairs.gov.in/public/upload/files/CP%20Act%202019_1732700731.pdf"
+)
 
 RULES_FILE = "ecommerce_rules_2020.pdf"
 RULES_NAME = "Consumer Protection (E-Commerce) Rules, 2020"
@@ -47,38 +49,130 @@ AMEND_URL = (
 
 # Definitions inside Section 2 of the Act, e.g. Section 2(7)
 ACT_DEFINITIONS = {
-    6: ("Complaint", "Consumers who want to know what a complaint can be about", "complaint"),
-    7: ("Consumer", "People who buy goods or use services, including online buyers", "consumer"),
+    6: (
+        "Complaint",
+        "Consumers who want to know what a complaint can be about",
+        "complaint",
+    ),
+    7: (
+        "Consumer",
+        "People who buy goods or use services, including online buyers",
+        "consumer",
+    ),
     9: ("Consumer Rights", "All consumers", "right"),
     10: ("Defect", "Consumers who bought faulty goods", "defect"),
     11: ("Deficiency", "Consumers facing poor or incomplete services", "deficiency"),
     16: ("E-Commerce", "Consumers who buy or sell online", "e-commerce"),
-    46: ("Unfair Contract", "Consumers forced into one-sided contract terms", "unfair contract"),
-    47: ("Unfair Trade Practice", "Consumers facing false claims or misleading selling methods", "unfair trade practice"),
+    46: (
+        "Unfair Contract",
+        "Consumers forced into one-sided contract terms",
+        "unfair contract",
+    ),
+    47: (
+        "Unfair Trade Practice",
+        "Consumers facing false claims or misleading selling methods",
+        "unfair trade practice",
+    ),
 }
 
 # Whole sections of the Act, e.g. Section 34
 ACT_SECTIONS = {
-    21: ("Action Against False or Misleading Advertisements", "Consumers misled by advertisements", "advertisement"),
-    34: ("Jurisdiction of District Commission", "Consumers deciding where to file a complaint", "District Commission"),
-    35: ("Manner in Which Complaint Shall Be Made", "Consumers and consumer associations filing complaints", "complaint"),
-    36: ("Proceedings Before District Commission", "Consumers and opposite parties in a complaint", "admit"),
-    37: ("Reference to Mediation", "Parties who want to settle a dispute by mediation", "mediation"),
-    38: ("Procedure on Admission of Complaint", "Consumers whose complaint has been admitted", "opposite party"),
-    39: ("Findings of District Commission", "Consumers wanting to know what relief they can get", "replace"),
-    41: ("Appeal Against Order of District Commission", "Parties who want to challenge a District Commission order", "State Commission"),
-    47: ("Jurisdiction of State Commission", "Consumers approaching the State Commission", "State Commission"),
-    51: ("Appeal to National Commission", "Parties challenging a State Commission order", "National Commission"),
-    58: ("Jurisdiction of National Commission", "Consumers approaching the National Commission", "National Commission"),
-    67: ("Appeal Against Order of National Commission", "Parties who want to go to the Supreme Court", "Supreme Court"),
-    69: ("Limitation Period", "Consumers planning to file a complaint (time limit)", "two years"),
+    21: (
+        "Action Against False or Misleading Advertisements",
+        "Consumers misled by advertisements",
+        "advertisement",
+    ),
+    34: (
+        "Jurisdiction of District Commission",
+        "Consumers deciding where to file a complaint",
+        "District Commission",
+    ),
+    35: (
+        "Manner in Which Complaint Shall Be Made",
+        "Consumers and consumer associations filing complaints",
+        "complaint",
+    ),
+    36: (
+        "Proceedings Before District Commission",
+        "Consumers and opposite parties in a complaint",
+        "admit",
+    ),
+    37: (
+        "Reference to Mediation",
+        "Parties who want to settle a dispute by mediation",
+        "mediation",
+    ),
+    38: (
+        "Procedure on Admission of Complaint",
+        "Consumers whose complaint has been admitted",
+        "opposite party",
+    ),
+    39: (
+        "Findings of District Commission",
+        "Consumers wanting to know what relief they can get",
+        "replace",
+    ),
+    41: (
+        "Appeal Against Order of District Commission",
+        "Parties who want to challenge a District Commission order",
+        "State Commission",
+    ),
+    47: (
+        "Jurisdiction of State Commission",
+        "Consumers approaching the State Commission",
+        "State Commission",
+    ),
+    51: (
+        "Appeal to National Commission",
+        "Parties challenging a State Commission order",
+        "National Commission",
+    ),
+    58: (
+        "Jurisdiction of National Commission",
+        "Consumers approaching the National Commission",
+        "National Commission",
+    ),
+    67: (
+        "Appeal Against Order of National Commission",
+        "Parties who want to go to the Supreme Court",
+        "Supreme Court",
+    ),
+    69: (
+        "Limitation Period",
+        "Consumers planning to file a complaint (time limit)",
+        "two years",
+    ),
     71: ("Enforcement of Orders", "Consumers whose order must be enforced", "decree"),
-    72: ("Penalty for Non-Compliance of Order", "Consumers when the seller ignores a Commission order", "imprisonment"),
-    74: ("Establishment of Consumer Mediation Cell", "Consumers and businesses using mediation", "mediation cell"),
-    80: ("Settlement Through Mediation", "Parties who reach a settlement through mediation", "settlement"),
-    84: ("Liability of Product Manufacturer", "Consumers harmed by a defective product", "manufacturer"),
-    89: ("Punishment for False or Misleading Advertisement", "Consumers misled by advertisements", "advertisement"),
-    94: ("Measures to Prevent Unfair Trade Practices in E-Commerce", "Online shoppers and direct-selling customers", "e-commerce"),
+    72: (
+        "Penalty for Non-Compliance of Order",
+        "Consumers when the seller ignores a Commission order",
+        "imprisonment",
+    ),
+    74: (
+        "Establishment of Consumer Mediation Cell",
+        "Consumers and businesses using mediation",
+        "mediation cell",
+    ),
+    80: (
+        "Settlement Through Mediation",
+        "Parties who reach a settlement through mediation",
+        "settlement",
+    ),
+    84: (
+        "Liability of Product Manufacturer",
+        "Consumers harmed by a defective product",
+        "manufacturer",
+    ),
+    89: (
+        "Punishment for False or Misleading Advertisement",
+        "Consumers misled by advertisements",
+        "advertisement",
+    ),
+    94: (
+        "Measures to Prevent Unfair Trade Practices in E-Commerce",
+        "Online shoppers and direct-selling customers",
+        "e-commerce",
+    ),
 }
 
 # Rules of the E-Commerce Rules, 2020
@@ -86,10 +180,26 @@ ECOM_RULES = {
     2: ("Scope and Applicability", "Online consumers", "e-commerce"),
     3: ("Definitions", "Online consumers", "marketplace"),
     4: ("Duties of E-Commerce Entities", "Online consumers", "grievance"),
-    5: ("Liabilities of Marketplace E-Commerce Entities", "Consumers buying on online marketplaces", "marketplace"),
-    6: ("Duties of Sellers on Marketplace", "Consumers buying from sellers on online marketplaces", "seller"),
-    7: ("Duties and Liabilities of Inventory E-Commerce Entities", "Consumers buying directly from online stores", "inventory"),
-    8: ("Contravention of Rules", "Consumers whose e-commerce rights are violated", "Consumer Protection Act"),
+    5: (
+        "Liabilities of Marketplace E-Commerce Entities",
+        "Consumers buying on online marketplaces",
+        "marketplace",
+    ),
+    6: (
+        "Duties of Sellers on Marketplace",
+        "Consumers buying from sellers on online marketplaces",
+        "seller",
+    ),
+    7: (
+        "Duties and Liabilities of Inventory E-Commerce Entities",
+        "Consumers buying directly from online stores",
+        "inventory",
+    ),
+    8: (
+        "Contravention of Rules",
+        "Consumers whose e-commerce rights are violated",
+        "Consumer Protection Act",
+    ),
 }
 
 # ---------------------------------------------------------------
@@ -130,7 +240,7 @@ def lines_to_text(lines):
     text = " ".join(lines)
     text = HEADER_PATTERN.sub(" ", text)
     text = END_PATTERN.sub("", text)
-    text = re.sub(r"(\w) -(\w)", r"\1-\2", text)   # "e -commerce" -> "e-commerce"
+    text = re.sub(r"(\w) -(\w)", r"\1-\2", text)  # "e -commerce" -> "e-commerce"
     text = re.sub(r"\s+", " ", text)
     return text.strip()
 
@@ -186,6 +296,7 @@ def build_record(title, doc_name, label, text, who, url):
 # Parsing each document
 # ---------------------------------------------------------------
 
+
 def parse_act():
     """Parse the Consumer Protection Act, 2019."""
     records = []
@@ -211,7 +322,9 @@ def parse_act():
             print(f"  WARNING: Section 2({number}) text looks wrong")
             continue
         records.append(
-            build_record(title, ACT_NAME, f"Section 2({number})", clause_text, who, ACT_URL)
+            build_record(
+                title, ACT_NAME, f"Section 2({number})", clause_text, who, ACT_URL
+            )
         )
 
     # Step 3: whole sections
@@ -226,7 +339,9 @@ def parse_act():
             print(f"  WARNING: Section {number} text looks wrong")
             continue
         records.append(
-            build_record(title, ACT_NAME, f"Section {number}", section_text, who, ACT_URL)
+            build_record(
+                title, ACT_NAME, f"Section {number}", section_text, who, ACT_URL
+            )
         )
 
     return records
@@ -300,6 +415,7 @@ def parse_amendment_rules():
 # Main
 # ---------------------------------------------------------------
 
+
 def main():
     all_records = []
 
@@ -313,9 +429,9 @@ def main():
             all_records.extend(function())
         except FileNotFoundError as error:
             print("  File not found:", error)
-        except Exception as error:  # a bad PDF must not stop the program
+        except Exception as error:  # noqa: BLE001
+            # A bad PDF must not stop processing other documents.
             print("  Could not parse:", error)
-
     try:
         with open(OUTPUT_FILE, "w", encoding="utf-8") as file:
             json.dump(all_records, file, indent=4, ensure_ascii=False)

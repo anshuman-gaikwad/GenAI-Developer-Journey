@@ -1,11 +1,8 @@
-
 # GrahakNyay Command Line Application
 
-from app.records import load_records, search, count_by, get_by_id
-
+from app.records import count_by, get_by_id, load_records, search
 
 while True:
-
     print("\n========== GRAHAKNYAY ==========")
     print("1. Display All Records")
     print("2. Search Records")
@@ -17,7 +14,6 @@ while True:
 
     # Display all records
     if choice == "1":
-
         records = load_records()
 
         for record in records:
@@ -28,7 +24,6 @@ while True:
 
     # Search records
     elif choice == "2":
-
         keyword = input("Enter keyword: ")
 
         results = search(keyword)
@@ -43,7 +38,6 @@ while True:
 
     # Count records by category
     elif choice == "3":
-
         counts = count_by()
 
         for category in counts:
@@ -68,7 +62,6 @@ while True:
 
     # Exit
     elif choice == "0":
-
         print("Thank you for using GrahakNyay!")
         break
 

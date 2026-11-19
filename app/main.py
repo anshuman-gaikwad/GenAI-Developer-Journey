@@ -1,4 +1,3 @@
-
 """
 GrahakNyay FastAPI service.
 
@@ -9,22 +8,19 @@ Docs:
     http://127.0.0.1:8000/docs
 """
 
-from app.vectorstore import semantic_search
-from app.rag import answer_question
 import json
 import re
 import uuid
 from pathlib import Path
-from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 
 from app.graph import run_agent_graph
-
 from app.llm import generate_response
+from app.rag import answer_question
 from app.smart_search import RECORDS, rank_records
-
+from app.vectorstore import semantic_search
 
 app = FastAPI(
     title="GrahakNyay API",
@@ -49,30 +45,25 @@ PROMPTS_DIR = BASE_DIR / "prompts"
 # Request models
 # ---------------------------------------------------------------
 
+
 class Question(BaseModel):
     question: str = Field(
-        ...,
-        min_length=3,
-        description="The consumer's problem or question"
+        ..., min_length=3, description="The consumer's problem or question"
     )
 
-    name: Optional[str] = Field(
-        default=None,
-        description="Consumer's name (optional)"
-    )
+    name: str | None = Field(default=None, description="Consumer's name (optional)")
 
 
 class ChatQuestion(BaseModel):
     question: str = Field(
-        ...,
-        min_length=3,
-        description="Ask a consumer-rights question"
+        ..., min_length=3, description="Ask a consumer-rights question"
     )
 
 
 # ---------------------------------------------------------------
 # Helper: Check case-decision timeline questions
 # ---------------------------------------------------------------
+
 
 def is_timeline_question(question):
     question = question.lower()
@@ -81,15 +72,12 @@ def is_timeline_question(question):
         re.search(
             r"\b(how long|how much time|time taken|"
             r"expected time|duration|take to decide)\b",
-            question
+            question,
         )
     )
 
     mentions_case = bool(
-        re.search(
-            r"\b(case|commission|complaint|decision|decide)\b",
-            question
-        )
+        re.search(r"\b(case|commission|complaint|decision|decide)\b", question)
     )
 
     return asks_duration and mentions_case
@@ -99,13 +87,13 @@ def is_timeline_question(question):
 # Helper: Read prompt files
 # ---------------------------------------------------------------
 
+
 def read_prompt(filename):
     prompt_path = PROMPTS_DIR / filename
 
     if not prompt_path.exists():
         raise HTTPException(
-            status_code=500,
-            detail=f"Prompt file not found: {filename}"
+            status_code=500, detail=f"Prompt file not found: {filename}"
         )
 
     return prompt_path.read_text(encoding="utf-8")
@@ -114,6 +102,7 @@ def read_prompt(filename):
 # ---------------------------------------------------------------
 # Helper: Parse the LLM JSON response
 # ---------------------------------------------------------------
+
 
 def parse_chat_response(response_text):
     """
@@ -125,10 +114,7 @@ def parse_chat_response(response_text):
     # Remove Markdown code fences if the model adds them.
     if cleaned_text.startswith("```"):
         cleaned_text = re.sub(
-            r"^```(?:json)?\s*",
-            "",
-            cleaned_text,
-            flags=re.IGNORECASE
+            r"^```(?:json)?\s*", "", cleaned_text, flags=re.IGNORECASE
         )
         cleaned_text = re.sub(r"\s*```$", "", cleaned_text)
 
@@ -139,13 +125,11 @@ def parse_chat_response(response_text):
         confidence = result.get("confidence")
         follow_up = result.get("follow_up")
 
-        if not isinstance(answer, str):
-            raise ValueError("The answer field must be text.")
+        if isinstance(confidence, bool) or not isinstance(confidence, (int, float)):
+            raise TypeError("The answer field must be text.")
 
-        if isinstance(confidence, bool) or not isinstance(
-            confidence, (int, float)
-        ):
-            raise ValueError("Confidence must be a number.")
+        if isinstance(confidence, bool) or not isinstance(confidence, (int, float)):
+            raise TypeError("Confidence must be a number.")
 
         confidence = float(confidence)
 
@@ -155,19 +139,12 @@ def parse_chat_response(response_text):
         if follow_up is not None and not isinstance(follow_up, str):
             raise ValueError("Follow-up must be text or null.")
 
-        return {
-            "answer": answer,
-            "confidence": confidence,
-            "follow_up": follow_up
-        }
+        return {"answer": answer, "confidence": confidence, "follow_up": follow_up}
 
-    except (json.JSONDecodeError, ValueError, AttributeError):
+    except (json.JSONDecodeError, ValueError, TypeError, AttributeError):
         raise HTTPException(
             status_code=502,
-            detail=(
-                "The AI provider returned an invalid response. "
-                "Please try again."
-            )
+            detail=("The AI provider returned an invalid response. Please try again."),
         )
 
 
@@ -175,39 +152,36 @@ def parse_chat_response(response_text):
 # GET /health
 # ---------------------------------------------------------------
 
+
 @app.get("/health")
 def health():
     """Check that the service is running."""
-    return {
-        "status": "ok",
-        "records_loaded": len(RECORDS)
-    }
+    return {"status": "ok", "records_loaded": len(RECORDS)}
 
 
 # ---------------------------------------------------------------
 # GET /records?limit=
 # ---------------------------------------------------------------
 
+
 @app.get("/records")
 def list_records(
     limit: int = Query(
-        default=10,
-        ge=1,
-        le=100,
-        description="How many records to return"
-    )
+        default=10, ge=1, le=100, description="How many records to return"
+    ),
 ):
     """Return the first 'limit' records."""
     return {
         "total": len(RECORDS),
         "returned": len(RECORDS[:limit]),
-        "records": RECORDS[:limit]
+        "records": RECORDS[:limit],
     }
 
 
 # ---------------------------------------------------------------
 # GET /records/{record_id}
 # ---------------------------------------------------------------
+
 
 @app.get("/records/{record_id}")
 def get_record(record_id: int):
@@ -216,43 +190,29 @@ def get_record(record_id: int):
         if record["id"] == record_id:
             return record
 
-    raise HTTPException(
-        status_code=404,
-        detail=f"Record {record_id} not found"
-    )
+    raise HTTPException(status_code=404, detail=f"Record {record_id} not found")
 
 
 # ---------------------------------------------------------------
 # GET /search?q=
 # ---------------------------------------------------------------
 
+
 @app.get("/search")
 def search(
-    q: str = Query(
-        ...,
-        min_length=1,
-        description="Words to search for"
-    ),
-    top_k: int = Query(
-        default=5,
-        ge=1,
-        le=20,
-        description="Maximum results"
-    )
+    q: str = Query(..., min_length=1, description="Words to search for"),
+    top_k: int = Query(default=5, ge=1, le=20, description="Maximum results"),
 ):
     """Search records using TF-IDF and cosine similarity."""
     results = rank_records(q, top_k=top_k)
 
-    return {
-        "query": q,
-        "count": len(results),
-        "results": results
-    }
+    return {"query": q, "count": len(results), "results": results}
 
 
 # ---------------------------------------------------------------
 # POST /questions
 # ---------------------------------------------------------------
+
 
 @app.post("/questions")
 def ask_question(body: Question):
@@ -270,7 +230,7 @@ def ask_question(body: Question):
             ),
             "answerable": False,
             "matches": [],
-            "disclaimer": DISCLAIMER
+            "disclaimer": DISCLAIMER,
         }
 
     matches = rank_records(body.question, top_k=3)
@@ -301,13 +261,14 @@ def ask_question(body: Question):
         "answer": answer,
         "answerable": answerable,
         "matches": matches,
-        "disclaimer": DISCLAIMER
+        "disclaimer": DISCLAIMER,
     }
 
 
 # ---------------------------------------------------------------
 # POST /chat
 # ---------------------------------------------------------------
+
 
 @app.post("/chat")
 def chat_with_grahaknyay(body: ChatQuestion):
@@ -327,25 +288,15 @@ def chat_with_grahaknyay(body: ChatQuestion):
     matches = rank_records(body.question, top_k=3)
 
     # Prepare records as readable JSON
-    context = json.dumps(
-        matches,
-        ensure_ascii=False,
-        indent=2
-    )
+    context = json.dumps(matches, ensure_ascii=False, indent=2)
 
     # Fill the task prompt placeholders
-    user_prompt = task_prompt.replace(
-        "{question}", body.question
-    ).replace(
+    user_prompt = task_prompt.replace("{question}", body.question).replace(
         "{context}", context
     )
 
     # Combine system and task prompts
-    complete_prompt = (
-        f"{system_prompt}\n\n"
-        f"{user_prompt}\n\n"
-        f"Reminder: {DISCLAIMER}"
-    )
+    complete_prompt = f"{system_prompt}\n\n{user_prompt}\n\nReminder: {DISCLAIMER}"
 
     try:
         # Generate response using the configured LLM provider
@@ -357,46 +308,35 @@ def chat_with_grahaknyay(body: ChatQuestion):
     except HTTPException:
         raise
 
-    except Exception as error:
+    except Exception as error:  # noqa: BLE001
         raise HTTPException(
-            status_code=502,
-            detail=f"AI provider request failed: {str(error)}"
+            status_code=502, detail=f"AI provider request failed: {error!s}"
         )
-
-
-
 
 
 # ---------------------------------------------------------------
 # GET /search/semantic?q=
 # ---------------------------------------------------------------
 
+
 @app.get("/search/semantic")
 def semantic_search_api(
     q: str = Query(
-        ...,
-        min_length=1,
-        description="Question to search in legal documents"
+        ..., min_length=1, description="Question to search in legal documents"
     ),
-    top_k: int = Query(
-        default=5,
-        ge=1,
-        le=20
-    )
+    top_k: int = Query(default=5, ge=1, le=20),
 ):
     """Search legal documents using semantic similarity."""
 
     results = semantic_search(q, top_k=top_k)
 
-    return {
-        "query": q,
-        "count": len(results),
-        "results": results
-    }
+    return {"query": q, "count": len(results), "results": results}
+
 
 # ---------------------------------------------------------------
 # POST /ask
 # ---------------------------------------------------------------
+
 
 @app.post("/ask")
 def ask_with_rag(body: ChatQuestion):
@@ -412,24 +352,24 @@ def ask_with_rag(body: ChatQuestion):
             "question": body.question,
             "answer": result["answer"],
             "citations": result["citations"],
-            "disclaimer": DISCLAIMER
+            "disclaimer": DISCLAIMER,
         }
 
-    except Exception as error:
-        raise HTTPException(
-            status_code=502,
-            detail=f"RAG request failed: {str(error)}"
-        )
+    except Exception as error:  # noqa: BLE001
+        raise HTTPException(status_code=502, detail=f"RAG request failed: {error!s}")
+
+
 # --------------------------------------------------
 # POST /agent - GrahakNyay LangGraph Agent
 # --------------------------------------------------
 
+
 class AgentRequest(BaseModel):
     question: str = ""
-    amount_paid: Optional[float] = None
-    cause_date: Optional[str] = None
-    thread_id: Optional[str] = None
-    approved: Optional[bool] = None
+    amount_paid: float | None = None
+    cause_date: str | None = None
+    thread_id: str | None = None
+    approved: bool | None = None
 
 
 @app.post("/agent")
@@ -443,16 +383,11 @@ def agent_endpoint(body: AgentRequest):
 
     # Resuming a paused approval request
     if body.approved is not None:
-
         if not body.thread_id:
-            return {
-                "error": "thread_id is required to resume approval."
-            }
+            return {"error": "thread_id is required to resume approval."}
 
         return run_agent_graph(
-            question=body.question,
-            thread_id=body.thread_id,
-            approved=body.approved
+            question=body.question, thread_id=body.thread_id, approved=body.approved
         )
 
     # Starting a new agent request
@@ -462,5 +397,5 @@ def agent_endpoint(body: AgentRequest):
         question=body.question,
         amount_paid=body.amount_paid,
         cause_date=body.cause_date,
-        thread_id=thread_id
+        thread_id=thread_id,
     )

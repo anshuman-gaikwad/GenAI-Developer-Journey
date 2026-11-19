@@ -1,4 +1,3 @@
-
 """
 run_eval.py - GrahakNyay Day 08
 
@@ -9,7 +8,6 @@ import json
 from pathlib import Path
 
 from app.rag import answer_question
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 EVAL_FILE = BASE_DIR / "eval" / "eval_set.json"
@@ -34,12 +32,8 @@ def run_evaluation(config_name, top_k):
     print("Top K:", top_k)
 
     for item in questions:
-
         try:
-            response = answer_question(
-                item["question"],
-                top_k=top_k
-            )
+            response = answer_question(item["question"], top_k=top_k)
 
             answer = response["answer"]
             citations = response["citations"]
@@ -53,30 +47,32 @@ def run_evaluation(config_name, top_k):
             if passed:
                 successful += 1
 
-            results.append({
-                "id": item["id"],
-                "question": item["question"],
-                "answer": answer,
-                "citations": citations,
-                "passed": passed
-            })
-
-            print(
-                f"Q{item['id']}: "
-                f"{'PASS' if passed else 'FAIL'}"
+            results.append(
+                {
+                    "id": item["id"],
+                    "question": item["question"],
+                    "answer": answer,
+                    "citations": citations,
+                    "passed": passed,
+                }
             )
 
-        except Exception as error:
+            print(f"Q{item['id']}: {'PASS' if passed else 'FAIL'}")
+
+        except Exception as error:  # noqa: BLE001
+            # Continue evaluating other questions if one fails.
             print(f"Q{item['id']}: ERROR - {error}")
 
-            results.append({
-                "id": item["id"],
-                "question": item["question"],
-                "answer": "",
-                "citations": [],
-                "passed": False,
-                "error": str(error)
-            })
+            results.append(
+                {
+                    "id": item["id"],
+                    "question": item["question"],
+                    "answer": "",
+                    "citations": [],
+                    "passed": False,
+                    "error": str(error),
+                }
+            )
 
     total = len(questions)
     accuracy = (successful / total) * 100 if total else 0
@@ -90,21 +86,14 @@ def run_evaluation(config_name, top_k):
         "top_k": top_k,
         "passed": successful,
         "total": total,
-        "accuracy": round(accuracy, 2)
+        "accuracy": round(accuracy, 2),
     }
 
 
 if __name__ == "__main__":
+    config_1 = run_evaluation(config_name="Config 1", top_k=3)
 
-    config_1 = run_evaluation(
-        config_name="Config 1",
-        top_k=3
-    )
-
-    config_2 = run_evaluation(
-        config_name="Config 2",
-        top_k=5
-    )
+    config_2 = run_evaluation(config_name="Config 2", top_k=5)
 
     print("\n========== WINNER COMPARISON ==========")
 

@@ -1,4 +1,3 @@
-
 """
 graph.py - GrahakNyay Day 09
 
@@ -9,11 +8,11 @@ LangGraph agent with:
 4. One human approval step
 """
 
-from typing import TypedDict, Optional, Any
+from typing import Any, TypedDict
 
-from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import InMemorySaver
-from langgraph.types import interrupt, Command
+from langgraph.graph import END, START, StateGraph
+from langgraph.types import Command, interrupt
 
 from app.rag import answer_question
 from app.tools import commission_and_fee_finder
@@ -22,10 +21,10 @@ from app.tools import commission_and_fee_finder
 # 1. Define the graph state
 class AgentState(TypedDict):
     question: str
-    amount_paid: Optional[float]
-    cause_date: Optional[str]
+    amount_paid: float | None
+    cause_date: str | None
     selected_tool: str
-    approved: Optional[bool]
+    approved: bool | None
     result: Any
 
 
@@ -41,13 +40,10 @@ def decide_tool(state: AgentState):
         "complaint fee",
         "last date",
         "deadline",
-        "limitation period"
+        "limitation period",
     ]
 
-    use_calculator = any(
-        word in question
-        for word in calculator_keywords
-    )
+    use_calculator = any(word in question for word in calculator_keywords)
 
     if use_calculator:
         if state["amount_paid"] is None or state["cause_date"] is None:
@@ -58,7 +54,7 @@ def decide_tool(state: AgentState):
                         "Please provide the amount paid and "
                         "the cause-of-action date (YYYY-MM-DD)."
                     )
-                }
+                },
             }
 
         return {"selected_tool": "calculator"}
@@ -69,11 +65,13 @@ def decide_tool(state: AgentState):
 # 3. Ask for approval before calculator execution
 def approval_step(state: AgentState):
 
-    approved = interrupt({
-        "message": "Please approve the commission and filing-fee calculation.",
-        "amount_paid": state["amount_paid"],
-        "cause_date": state["cause_date"]
-    })
+    approved = interrupt(
+        {
+            "message": "Please approve the commission and filing-fee calculation.",
+            "amount_paid": state["amount_paid"],
+            "cause_date": state["cause_date"],
+        }
+    )
 
     return {"approved": bool(approved)}
 
@@ -81,10 +79,7 @@ def approval_step(state: AgentState):
 # 4. Run the calculator
 def calculator_node(state: AgentState):
 
-    result = commission_and_fee_finder(
-        state["amount_paid"],
-        state["cause_date"]
-    )
+    result = commission_and_fee_finder(state["amount_paid"], state["cause_date"])
 
     return {"result": result}
 
@@ -140,22 +135,11 @@ builder.add_node("rejected", rejected_node)
 builder.add_edge(START, "decide")
 
 builder.add_conditional_edges(
-    "decide",
-    route_tool,
-    {
-        "approval": "approval",
-        "rag": "rag",
-        "end": END
-    }
+    "decide", route_tool, {"approval": "approval", "rag": "rag", "end": END}
 )
 
 builder.add_conditional_edges(
-    "approval",
-    route_approval,
-    {
-        "calculator": "calculator",
-        "rejected": "rejected"
-    }
+    "approval", route_approval, {"calculator": "calculator", "rejected": "rejected"}
 )
 
 builder.add_edge("calculator", END)
@@ -175,21 +159,14 @@ def run_agent_graph(
     amount_paid=None,
     cause_date=None,
     thread_id="default-thread",
-    approved=None
+    approved=None,
 ):
 
-    config = {
-        "configurable": {
-            "thread_id": thread_id
-        }
-    }
+    config = {"configurable": {"thread_id": thread_id}}
 
     if approved is not None:
         # Continue a paused graph after user approval/rejection.
-        result = graph.invoke(
-            Command(resume=approved),
-            config
-        )
+        result = graph.invoke(Command(resume=approved), config)
 
     else:
         # Start a new conversation.
@@ -199,24 +176,23 @@ def run_agent_graph(
             "cause_date": cause_date,
             "selected_tool": "",
             "approved": None,
-            "result": None
+            "result": None,
         }
 
         result = graph.invoke(initial_state, config)
 
     # Check whether the graph is waiting for approval.
     if "__interrupt__" in result:
-
         approval_request = result["__interrupt__"][0]
 
         return {
             "status": "approval_required",
             "thread_id": thread_id,
-            "approval_request": approval_request.value
+            "approval_request": approval_request.value,
         }
 
     return {
         "status": "completed",
         "thread_id": thread_id,
-        "result": result.get("result")
+        "result": result.get("result"),
     }

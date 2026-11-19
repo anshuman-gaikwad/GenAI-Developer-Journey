@@ -1,4 +1,3 @@
-
 """
 GrahakNyay smart search.
 
@@ -13,7 +12,6 @@ from pathlib import Path
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 RECORDS_FILE = BASE_DIR / "data" / "records.json"
@@ -65,10 +63,7 @@ def _record_text(record):
         "who_it_helps",
     ]
 
-    return " ".join(
-        str(record.get(field, ""))
-        for field in fields
-    )
+    return " ".join(str(record.get(field, "")) for field in fields)
 
 
 # Build the TF-IDF index.
@@ -77,14 +72,9 @@ MATRIX = None
 
 if RECORDS:
     try:
-        VECTORIZER = TfidfVectorizer(
-            stop_words="english",
-            ngram_range=(1, 2)
-        )
+        VECTORIZER = TfidfVectorizer(stop_words="english", ngram_range=(1, 2))
 
-        MATRIX = VECTORIZER.fit_transform(
-            [_record_text(record) for record in RECORDS]
-        )
+        MATRIX = VECTORIZER.fit_transform([_record_text(record) for record in RECORDS])
 
     except ValueError as error:
         print("Could not build search index:", error)
@@ -111,14 +101,9 @@ def _is_section_2_7(record):
     section = str(record.get("section_or_rule", "")).lower()
     document = str(record.get("document_name", "")).lower()
 
-    section_match = bool(
-        re.search(r"section\s*2\s*[\(\[]\s*7\s*[\)\]]", section)
-    )
+    section_match = bool(re.search(r"section\s*2\s*[\(\[]\s*7\s*[\)\]]", section))
 
-    act_match = (
-        "consumer protection act" in document
-        and "e-commerce" not in document
-    )
+    act_match = "consumer protection act" in document and "e-commerce" not in document
 
     return section_match and act_match
 
@@ -161,10 +146,7 @@ def rank_records(query, top_k=5):
 
         ranked_records.append(item)
 
-    ranked_records.sort(
-        key=lambda item: item["score"],
-        reverse=True
-    )
+    ranked_records.sort(key=lambda item: item["score"], reverse=True)
 
     return ranked_records[:top_k]
 
@@ -180,5 +162,5 @@ if __name__ == "__main__":
             "|",
             record["section_or_rule"],
             "|",
-            record["provision_title"]
+            record["provision_title"],
         )

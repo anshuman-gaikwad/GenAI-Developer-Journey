@@ -1,4 +1,3 @@
-
 """
 rag.py - GrahakNyay Day 08
 
@@ -6,8 +5,8 @@ Retrieves relevant legal chunks and generates
 answers with source citations.
 """
 
-from app.vectorstore import semantic_search
 from app.llm import generate_response
+from app.vectorstore import semantic_search
 
 
 def answer_question(question, top_k=5):
@@ -20,10 +19,7 @@ def answer_question(question, top_k=5):
     """
 
     if not question or not question.strip():
-        return {
-            "answer": "Please enter a question.",
-            "citations": []
-        }
+        return {"answer": "Please enter a question.", "citations": []}
 
     # Step 1: Retrieve relevant legal chunks
     chunks = semantic_search(question, top_k=top_k)
@@ -36,7 +32,7 @@ def answer_question(question, top_k=5):
                 "available legal documents. Please try asking "
                 "the question in a different way."
             ),
-            "citations": []
+            "citations": [],
         }
 
     # Step 3: Prepare legal context
@@ -63,21 +59,14 @@ Content:
 """
         )
 
-        citation = {
-            "title": title,
-            "source": source,
-            "page": page
-        }
+        citation = {"title": title, "source": source, "page": page}
 
         if citation not in citations:
             citations.append(citation)
 
     # Step 4: Check whether usable context exists
     if not context_parts:
-        return {
-            "answer": "No usable legal information was retrieved.",
-            "citations": []
-        }
+        return {"answer": "No usable legal information was retrieved.", "citations": []}
 
     context = "\n".join(context_parts)
 
@@ -121,7 +110,4 @@ Write a clear and helpful answer:
     answer = generate_response(prompt)
 
     # Step 7: Return answer and citations
-    return {
-        "answer": answer.strip(),
-        "citations": citations
-    }
+    return {"answer": answer.strip(), "citations": citations}

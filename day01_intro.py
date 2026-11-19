@@ -1,4 +1,3 @@
-
 # GrahakNyay Project Card
 product = "GrahakNyay"
 user = "Online Consumers"

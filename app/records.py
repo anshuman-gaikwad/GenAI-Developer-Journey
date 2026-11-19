@@ -1,4 +1,3 @@
-
 from data.sample_records import records
 
 
@@ -25,7 +24,7 @@ def search(keyword):
                 "section_or_rule",
                 "plain_summary",
                 "who_it_helps",
-                "category"
+                "category",
             ]
         ).lower()
 
