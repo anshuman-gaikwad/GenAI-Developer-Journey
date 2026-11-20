@@ -18,6 +18,7 @@ RUN --mount=type=bind,source=docker-wheels,target=/wheels,readonly \
 
 COPY app ./app
 COPY ui ./ui
+COPY data/records.json ./data/records.json
 
 EXPOSE 8000 8501
 

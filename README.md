@@ -415,3 +415,4 @@ The Docker setup will be verified on a machine with Docker Desktop installed.
 - Start the API and UI using Docker Compose.
 - Test API connectivity, RAG responses, citations, and feedback persistence.
 - Update this README after successful Docker verification.
+
