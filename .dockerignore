@@ -13,3 +13,7 @@ __pycache__
 data/chroma_db
 data/feedback.jsonl
 ui/feedback.jsonl
+
+
+COPY app ./app
+COPY ui ./ui
