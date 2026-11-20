@@ -1,5 +1,7 @@
 # GrahakNyay
 
+[![GrahakNyay CI](https://github.com/anshuman-gaikwad/GenAI-Developer-Journey/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/anshuman-gaikwad/GenAI-Developer-Journey/actions/workflows/ci.yml)
+
 ## 1. Product
 GrahakNyay is a consumer rights assistance system. It helps consumers understand their rights and guides them on how to file complaints.
 
