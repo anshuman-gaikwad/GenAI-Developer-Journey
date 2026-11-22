@@ -2,6 +2,93 @@
 
 [![GrahakNyay CI](https://github.com/anshuman-gaikwad/GenAI-Developer-Journey/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/anshuman-gaikwad/GenAI-Developer-Journey/actions/workflows/ci.yml)
 
+## Portfolio Overview
+
+**GrahakNyay** is a deployed, full-stack Generative AI application that helps Indian consumers understand their rights, explore relevant consumer-protection provisions, and identify possible complaint-filing steps.
+
+**Problem:** Consumers often struggle to understand legal terminology, locate relevant consumer-protection rules, and determine where to file complaints.
+
+**Solution:** GrahakNyay combines legal-document retrieval, LLM-generated explanations with citations, and a LangGraph agent with a Consumer Commission and filing-fee calculator. It provides general information, not professional legal advice.
+
+### Try the Application
+
+- **Live Streamlit App:** https://genai-developer-journey-jowf6tq3safp6mu9dmzaey.streamlit.app/
+- **FastAPI Backend:** https://grahaknyay-api.onrender.com
+- **Swagger API Documentation:** https://grahaknyay-api.onrender.com/docs
+
+### System Architecture
+
+```mermaid
+flowchart TD
+    U["Consumer"] --> UI["Streamlit Web Interface"]
+    UI --> API["FastAPI Backend"]
+
+    API --> MODE{"Request Mode"}
+
+    MODE --> RAG["RAG Question Answering"]
+    MODE --> AGENT["LangGraph Agent"]
+
+    RAG --> SEARCH["TF-IDF Retrieval"]
+    SEARCH --> DATA["36 Consumer-Law Records"]
+    DATA --> SEARCH
+    SEARCH --> PROMPT["Grounded Prompt with Legal Context"]
+    PROMPT --> LLM["Groq LLM"]
+    LLM --> ANSWER["Generated Answer with Citations"]
+
+    AGENT --> TOOLS["Legal Search / Commission and Fee Calculator"]
+    TOOLS --> APPROVAL["User Approval for Calculator"]
+    APPROVAL --> AGENT_RESULT["Agent Result"]
+
+    ANSWER --> API
+    AGENT_RESULT --> API
+    API --> UI
+```
+
+**Deployment:** Streamlit Community Cloud hosts the frontend, Render hosts the FastAPI backend, and GitHub Actions runs automated code-quality, test, and Docker-build checks.
+
+Production uses TF-IDF retrieval to stay within the hosting memory limit. Local semantic retrieval is also supported.
+
+### Project Results
+
+| Area | Verified Result |
+|---|---|
+| Legal knowledge base | 36 structured consumer-law records |
+| Semantic search pipeline | 152 document chunks indexed locally |
+| Automated tests | 37 passing tests |
+| Code quality | Ruff checks passing |
+| RAG evaluation | 15/15 checks passed in each of two tested configurations |
+| Groq model | `openai/gpt-oss-20b` |
+| Groq response latency | 995.84 ms in one local test |
+| API cache-miss latency | 1,004.23 ms |
+| API cache-hit latency | 1.22 ms |
+| Cache policy | 5-minute TTL, maximum 100 entries |
+| Deployment | Streamlit frontend + Render backend |
+
+*Latency values come from one local cache miss and one cache hit; they are not production benchmarks. RAG evaluation scores reflect the project's evaluation criteria, not a guarantee of legal correctness.*
+
+### Demo Video
+
+A short walkthrough video will be linked here after recording. The live application is available above.
+
+### Technology Stack
+
+**Backend:** Python, FastAPI, Pydantic
+
+**Frontend:** Streamlit
+
+**AI:** Groq, Retrieval-Augmented Generation (RAG), LangGraph
+
+**Retrieval:** TF-IDF, Sentence Transformers, ChromaDB
+
+**Engineering:** pytest, Ruff, Docker, GitHub Actions
+
+### Project Documentation
+
+The sections below document the development process, from data ingestion and semantic search to RAG, agents, deployment, testing, and production-readiness improvements.
+
+---
+
+
 ## 1. Product
 GrahakNyay is a consumer rights assistance system. It helps consumers understand their rights and guides them on how to file complaints.
 
@@ -384,39 +471,47 @@ All checks passed!
 
 ### S2 — Docker Containerization
 
-**Status: Pending implementation and verification**
+**Status: Completed during Day 12**
 
-The following files will be added:
+GrahakNyay includes Docker configuration for containerized deployment and local development.
 
-- `Dockerfile` — Defines the Python environment and application image.
-- `.dockerignore` — Excludes unnecessary and sensitive files from the build context.
-- `docker-compose.yml` — Configures the FastAPI and Streamlit services.
+| File | Purpose |
+|---|---|
+| `Dockerfile` | Defines the container image for the application. |
+| `.dockerignore` | Excludes unnecessary files from the Docker build context. |
+| `docker-compose.yml` | Defines the Docker Compose service configuration. |
+| `.github/workflows/ci.yml` | Runs automated CI checks, including Docker build verification. |
 
 ### Run with Docker
 
-**Note:** Docker support is planned but has not yet been tested.
-
-Once the Docker configuration is implemented, the intended startup command is:
+From the repository root:
 
 ```bash
 docker compose up --build
 ```
 
-Expected application URLs:
+Check the service ports and URLs defined in `docker-compose.yml` for the available application endpoints.
 
-- Streamlit UI: http://localhost:8501
-- FastAPI: http://localhost:8000
-- API documentation: http://localhost:8000/docs
+### CI/CD Verification
 
-The Docker setup will be verified on a machine with Docker Desktop installed.
+GitHub Actions runs automated checks for:
 
-### Remaining work
+- Python code quality using Ruff.
+- Automated tests using pytest.
+- Docker image build verification.
 
-- Create and configure the Docker files.
-- Verify Docker image builds and dependency installation.
-- Start the API and UI using Docker Compose.
-- Test API connectivity, RAG responses, citations, and feedback persistence.
-- Update this README after successful Docker verification.
+### Deployment
+
+The application is deployed using Streamlit Community Cloud for the frontend and Render for the FastAPI backend.
+
+See the **Live Deployment** section below for the public URLs.
+
+### Notes
+
+- Docker build verification does not guarantee that every application workflow functions correctly inside the container.
+- API credentials must be supplied through environment variables or deployment secrets, not committed to the repository.
+- GrahakNyay provides general consumer-rights information, not legal advice.
+
 
 
 ## Live Deployment
@@ -488,3 +583,10 @@ These tests validate prompt construction, **not complete resistance to prompt in
 The Render deployment uses TF-IDF retrieval to reduce memory requirements. Local semantic retrieval is also supported.
 
 Performance depends on provider latency, model availability, retrieval method, cache state, and deployment environment. Local measurements should not be treated as production service-level guarantees.
+
+
+### Demo Video
+
+**Coming soon:** A short walkthrough of GrahakNyay will be added here.
+
+In the meantime, try the [live application](https://genai-developer-journey-jowf6tq3safp6mu9dmzaey.streamlit.app/).
