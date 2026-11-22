@@ -421,13 +421,20 @@ The Docker setup will be verified on a machine with Docker Desktop installed.
 
 ## Live Deployment
 
-GrahakNyay is deployed on Render.
+**GrahakNyay** is deployed as a full-stack GenAI consumer-rights application.
 
-- **API URL:** https://grahaknyay-api.onrender.com
-- **API documentation:** https://grahaknyay-api.onrender.com/docs
-- **Health check:** https://grahaknyay-api.onrender.com/health
-- **Hosting:** Render (Free Web Service)
+- **Live Application (Streamlit):** https://genai-developer-journey-jowf6tq3safp6mu9dmzaey.streamlit.app/
+- **Backend API (Render):** https://grahaknyay-api.onrender.com
+- **Interactive API Documentation:** https://grahaknyay-api.onrender.com/docs
 
-**Deployment status:** Live. The public `/health` endpoint returns `{"status":"ok","records_loaded":36}`.
+### Architecture
 
-**Note:** The free Render instance may take approximately a minute to wake up after inactivity. AI-powered endpoints may require more memory than the free instance provides.
+- **Frontend:** Streamlit Community Cloud
+- **Backend:** FastAPI hosted on Render
+- **Retrieval:** TF-IDF over 36 structured consumer-law records in production
+- **LLM:** Groq
+- **CI/CD:** GitHub Actions with Ruff, pytest, and Docker build checks
+
+The frontend communicates with the backend over HTTPS. The backend retrieves relevant legal provisions and generates answers with citations.
+
+*Note: Free hosting services may take additional time to respond after inactivity.*
