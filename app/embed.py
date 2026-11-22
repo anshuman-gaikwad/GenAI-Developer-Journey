@@ -4,7 +4,7 @@ embed.py - GrahakNyay Day 07
 Converts document chunks and search queries into embeddings.
 """
 
-from sentence_transformers import SentenceTransformer
+
 
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
@@ -13,10 +13,11 @@ _model = None
 
 def get_model():
     """Load the embedding model only when needed."""
-
     global _model
 
     if _model is None:
+        from sentence_transformers import SentenceTransformer
+
         _model = SentenceTransformer(MODEL_NAME)
 
     return _model

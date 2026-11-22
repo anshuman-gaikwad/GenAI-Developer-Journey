@@ -6,16 +6,6 @@ Stores document chunks and embeddings in persistent ChromaDB.
 
 from pathlib import Path
 
-# import chromadb
-
-def get_collection():
-    """Connect to the persistent ChromaDB collection."""
-    import chromadb
-
-    CHROMA_PATH.mkdir(parents=True, exist_ok=True)
-
-    client = chromadb.PersistentClient(path=str(CHROMA_PATH))
-
 from app.chunking import chunk_documents
 from app.embed import embed_documents, embed_query
 
@@ -28,6 +18,7 @@ COLLECTION_NAME = "grahaknyay_legal_documents"
 
 def get_collection():
     """Connect to the persistent ChromaDB collection."""
+    import chromadb
 
     CHROMA_PATH.mkdir(parents=True, exist_ok=True)
 
