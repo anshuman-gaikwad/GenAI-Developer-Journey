@@ -5,8 +5,35 @@ Retrieves relevant legal chunks and generates
 answers with source citations.
 """
 
+import os
+
 from app.llm import generate_response
+from app.smart_search import rank_records
 from app.vectorstore import semantic_search
+
+
+def retrieve_legal_chunks(question, top_k=5):
+    """Retrieve legal context using the configured search method."""
+
+    method = os.getenv("GRAHAKNYAY_RETRIEVAL", "semantic").lower().strip()
+
+    if method == "semantic":
+        return semantic_search(question, top_k=top_k)
+
+    if method == "tfidf":
+        records = rank_records(question, top_k=top_k)
+
+        return [
+            {
+                "title": record.get("provision_title", "Unknown provision"),
+                "source": record.get("document_name", "Unknown document"),
+                "page": record.get("section_or_rule", "Not specified"),
+                "text": record.get("plain_summary", ""),
+            }
+            for record in records
+        ]
+
+    raise ValueError("Invalid GRAHAKNYAY_RETRIEVAL. Choose 'semantic' or 'tfidf'.")
 
 
 def answer_question(question, top_k=5):
@@ -22,7 +49,7 @@ def answer_question(question, top_k=5):
         return {"answer": "Please enter a question.", "citations": []}
 
     # Step 1: Retrieve relevant legal chunks
-    chunks = semantic_search(question, top_k=top_k)
+    chunks = retrieve_legal_chunks(question, top_k=top_k)
 
     # Step 2: Check whether documents were retrieved
     if not chunks:
