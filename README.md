@@ -438,3 +438,53 @@ The Docker setup will be verified on a machine with Docker Desktop installed.
 The frontend communicates with the backend over HTTPS. The backend retrieves relevant legal provisions and generates answers with citations.
 
 *Note: Free hosting services may take additional time to respond after inactivity.*
+
+## Production notes
+
+### Performance and observability
+
+GrahakNyay logs API request latency, LLM request latency, and available input/output token counts. Logs include the request path, HTTP status, provider, and model without intentionally logging full user questions.
+
+**Measured local example (22 November 2026):**
+
+| Metric | Result |
+|---|---:|
+| Endpoint | `POST /ask` |
+| Question | General question about unfair trade practices |
+| Retrieval method | TF-IDF |
+| LLM provider | Groq |
+| Model | `openai/gpt-oss-20b` |
+| LLM latency | 995.84 ms |
+| Input tokens | 811 |
+| Output tokens | 227 |
+| API latency — cache miss | 1,004.23 ms |
+| API latency — cache hit | 1.22 ms |
+
+The cache hit was approximately **99.88% faster** than the cache miss in this two-request local test. These results are illustrative measurements, not statistically representative benchmarks.
+
+### Response caching
+
+The `/ask` endpoint uses a bounded, in-memory cache for an allowlist of general consumer-law questions.
+
+- Cache TTL: 300 seconds (5 minutes).
+- Maximum entries: 100.
+- Non-allowlisted questions bypass the cache.
+- Cached responses use deep copies to avoid accidental mutation.
+- Cache entries are lost when the server restarts.
+- The cache is local to each application process and is not shared across multiple instances.
+
+### Input validation
+
+Question inputs are limited to 2,000 characters across `/ask`, `/chat`, `/questions`, and `/agent`. The `/agent` request model permits an empty question to support approval-resume workflows.
+
+### Prompt-injection precautions
+
+The RAG prompt instructs the LLM to treat retrieved legal content and user questions as untrusted data. Automated tests verify that these instructions remain present when adversarial text appears in a question or retrieved document.
+
+These tests validate prompt construction, **not complete resistance to prompt injection**.
+
+### Deployment considerations
+
+The Render deployment uses TF-IDF retrieval to reduce memory requirements. Local semantic retrieval is also supported.
+
+Performance depends on provider latency, model availability, retrieval method, cache state, and deployment environment. Local measurements should not be treated as production service-level guarantees.
