@@ -418,3 +418,16 @@ The Docker setup will be verified on a machine with Docker Desktop installed.
 - Test API connectivity, RAG responses, citations, and feedback persistence.
 - Update this README after successful Docker verification.
 
+
+## Live Deployment
+
+GrahakNyay is deployed on Render.
+
+- **API URL:** https://grahaknyay-api.onrender.com
+- **API documentation:** https://grahaknyay-api.onrender.com/docs
+- **Health check:** https://grahaknyay-api.onrender.com/health
+- **Hosting:** Render (Free Web Service)
+
+**Deployment status:** Live. The public `/health` endpoint returns `{"status":"ok","records_loaded":36}`.
+
+**Note:** The free Render instance may take approximately a minute to wake up after inactivity. AI-powered endpoints may require more memory than the free instance provides.
