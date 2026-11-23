@@ -42,3 +42,25 @@ def test_invalid_date():
     result = commission_and_fee_finder(38000, "invalid-date")
 
     assert "error" in result
+
+
+import pytest
+
+
+@pytest.mark.parametrize(
+    ("amount_paid", "expected_commission"),
+    [
+        (50_00_000, "District Commission"),
+        (50_00_001, "State Commission"),
+        (2_00_00_000, "State Commission"),
+        (2_00_00_001, "National Commission"),
+    ],
+)
+def test_commission_jurisdiction_boundaries(
+    amount_paid, expected_commission
+):
+    """Verify the jurisdiction boundaries used by the calculator."""
+    result = commission_and_fee_finder(amount_paid, "2024-01-10")
+
+    assert "error" not in result
+    assert result["commission"] == expected_commission

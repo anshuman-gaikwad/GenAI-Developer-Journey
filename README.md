@@ -340,7 +340,7 @@ semantic legal search and a commission/filing-fee calculator.
 ### Legal Rules Used
 
 - Jurisdiction: Consumer Protection (Jurisdiction of the District Commission, the State Commission and the National Commission) Rules, 2021.
-- Complaint fee: Rule 7(2) of the Consumer Protection (Consumer Disputes Redressal Commissions) Rules, 2020, as amended in 2023.
+- Complaint fee: Rule 7(2) of the Consumer Protection (Consumer Disputes Redressal Commissions) Rules, 2020, as amended in 2023 (G.S.R. 606(E)).
 - Limitation period: Section 69 of the Consumer Protection Act, 2019.
 
 ### How to Run
