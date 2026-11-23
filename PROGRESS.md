@@ -33,8 +33,8 @@
 - [x] Run Ruff and the complete pytest suite (41 tests passed).
 - [x] Rehearse the GrahakNyay demo — first run.
 - [x] Rehearse the GrahakNyay demo — second run.
-- [ ] Commit Day 14 changes and merge the pull request.
-- [ ] Create and push the final Git release tag.
+- [x] Commit Day 14 changes and merge the pull request.
+- [x] Create and push the final Git release tag.
 
 ## Future Enhancement
 
@@ -44,7 +44,7 @@ This is a future portfolio enhancement, not a blocker for the Day 14 release.
 
 ## Release Notes
 
-**Release status:** In preparation.
+**Release status:** Released — v1.0.0 (GitHub Release published).
 
 **Important:** GrahakNyay provides general consumer-rights information and is not professional legal advice. Legal thresholds and filing fees must be checked against applicable official rules and amendments.
 
