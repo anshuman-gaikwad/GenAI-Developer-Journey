@@ -590,3 +590,22 @@ Performance depends on provider latency, model availability, retrieval method, c
 **Coming soon:** A short walkthrough of GrahakNyay will be added here.
 
 In the meantime, try the [live application](https://genai-developer-journey-jowf6tq3safp6mu9dmzaey.streamlit.app/).
+
+
+## GrahakNyay Demo Video
+
+**Status:** Planned — recording will be added later.
+
+**Video URL:** Coming soon.
+
+A short 2–3 minute walkthrough will demonstrate:
+
+- Asking consumer-rights questions using RAG.
+- Viewing legal source citations.
+- Using the Consumer Commission and filing-fee calculator.
+- Exploring the FastAPI Swagger documentation.
+- Understanding the project's architecture and technologies.
+
+**Note:** The application is already deployed and available for testing. The video is an optional portfolio enhancement.
+
+**Live Application:** https://genai-developer-journey-jowf6tq3safp6mu9dmzaey.streamlit.app/
